@@ -15,13 +15,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
 <?php
 
 function init() {
+	global $liste_vehicule;
 	require APPLICATION_PATH."models/Vehicule.php";
 	$Vehicule = new Application_Model_Vehicule();
 	$liste_vehicule = $Vehicule->getAllVehicules();
 }
 
 function do_get() {
-	global $id;
 	global $liste_vehicule;
 	if (empty($_GET["vehicule"])) {
 		$erreurs[] = "typeVehiculeRequis";
@@ -53,7 +53,6 @@ function do_get() {
 
 // FONCTION POST
 function do_post() {
-	global $id;
 	if (!is_admin()) {
 		exit_error(401, "mustBeAdmin");
 	}

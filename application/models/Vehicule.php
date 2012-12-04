@@ -93,4 +93,26 @@ class Application_Model_Vehicule {
 			die ('Erreur : '.$e->getMessage());
 		}
 	}
+
+	function setVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_categorie, $id_vehicule) {
+		global $bdd;
+		try {
+			$sql = $bdd->prepare("UPDATE vehicule SET titre = ':titre', description = ':description', prix = ':prix', annee = ':annee', km = ':km', energie = ':energie', date_modification = curdate(), boite_vitesse = ':boite_vitesse', nb_places = ':nb_places', cylindree = ':cylindree' WHERE id_vehicule = ':id_vehicule'");
+			$sql->bindValue(":titre", ucwords(trim($titre)));
+			$sql->bindValue(":description", trim($description));
+			$sql->bindValue(":prix", $prix);
+			$sql->bindValue(":annee", $annee);
+			$sql->bindValue(":km", $km);
+			$sql->bindValue(":energie", ucwords(trim($energie)));
+			$sql->bindValue(":boite_vitesse", ucwords(trim($boite_vitesse)));
+			$sql->bindValue(":nb_places", $nb_places);
+			$sql->bindValue(":cylindree", $cylindree);
+			$sql->bindValue(":id_vehicule", $id_vehicule);
+			$result = $sql->execute();
+			if ($result) {
+				echo "L'annonce a bien été modifié";
+			}
+		}
+	}
+
 }

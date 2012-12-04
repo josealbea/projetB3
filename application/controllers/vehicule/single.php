@@ -34,6 +34,7 @@ function init() {
 	}
 }
 function do_get() {
+  global $unVehicule;
 	$vehicule = new Application_Model_Vehicule();
 	$unVehicule = $vehicule->getVehicule($_GET['id']);
 }
@@ -46,60 +47,17 @@ function do_put() {
   $erreurs = array();
   // Les parametres passés en put
   parse_str(file_get_contents("php://input"), $_PUT);
-  if (empty($_PUT["titre"])) {
-    $erreurs[] = "titreRequis";
-  }
-  if (empty($_PUT["description"])) {
-    $erreurs[] = "descriptionRequise";
+  if (empty($_PUT["id"])) {
+    $erreurs[] = "idRequis";
   }
  
   if (count($erreurs) > 0) {
     exit_error(400, join(", ", $erreurs));
   }
   else {
-    try {
-      $db = getConnexion();
-      $sql = "UPDATE annonce SET titre=:titre, description=:description, prix=:prix, km=:km, annee=:annee WHERE id_vehicule=:id";
-      $stmt = $db->prepare($sql);
-      $stmt->bindValue(":titre", ucwords(trim($_PUT["titre"])));
-      $stmt->bindValue(":description", ucwords(trim($_PUT["description"])));
-      $stmt->bindValue(":prix", ucwords(trim($_PUT["prix"])));
-      $stmt->bindValue(":km", ucwords(trim($_PUT["km"])));
-      $stmt->bindValue(":annee", ucwords(trim($_PUT["annee"])));
-      $stmt->bindValue(":id", $_GET["id"]);
-      $ok = $stmt->execute();
-      if ($ok) {
-        $nb = $stmt->rowCount();
-        if ($nb == 0) {
-          $sql = "SELECT id_film FROM film WHERE id_film=:id";
-          $stmt = $db->prepare($sql);
-          $stmt->bindValue(":id", $_GET["id"]);
-          $ok = $stmt->execute();
-          if ($stmt->fetch() == null) {
-            send_status(404);
-          }
-          else {
-            send_status(204);
-          }
-        }
-        else {
-          send_status(204);
-        }
-      }
-      else {
-        $erreur = $stmt->errorInfo();
-        // si doublon
-        if ($erreur[1] == 1062) {
-          exit_error(409, "existeDeja");
-        }
-        else {
-          exit_error(409, $erreur[1]." : ".$erreur[2]);
-        }
-      }
-    }
-    catch (PDOException $e) {
-      exit_error(500, $e->getMessage());
-    }
+    global $unVehicule;
+    $vehicule = new Application_Model_Vehicule();
+    $unVehicule = $vehicule->setVehicule($_PUT['id']);
   }
 }
 
