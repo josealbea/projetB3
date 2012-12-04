@@ -1,0 +1,31 @@
+<?php
+foreach ($unVehicule as $vehicule) {
+	echo 'Titre : '.$vehicule['titre'].'<br />';
+	echo 'Description : '.$vehicule['description'].'</br>';
+	echo 'Année : '.$vehicule['annee'].'<br />';
+	echo 'Prix : '.$vehicule['prix'].'<br />';
+	echo 'Energie : '.$vehicule['energie'].'<br />';
+	echo 'Kilomètre : '.$vehicule['km'].'<br />';
+	if ($vehicule['id_categorie'] == 1) {
+		echo 'Boite de vitesse : '.$vehicule['boite_vitesse'].'<br />';
+		echo 'Nombre de places : '.$vehicule['nb_places'].'<br />';
+		echo 'Type de vehicule : voiture<br />';
+	}
+	elseif ($vehicule['id_categorie'] == 2) {
+		echo 'Cylindrée : '.$vehicule['cylindree'].'<br />';
+		echo 'Type de véhicule : moto<br />';
+	}
+	else {
+		echo 'Cylindrée : '.$vehicule['cylindree'].'<br />';
+		echo 'Type de véhicule : scooter<br />';
+	}
+	
+	echo 'Ajouté le  : '.date("j/m/Y", strtotime($vehicule['date_ajout'])).'<br />';
+	if ($vehicule['date_modification'] != "0000-00-00") {
+		echo 'Dernière modification le  : '.date("j/m/Y", strtotime($vehicule['date_modification'])).'<br />';
+	}
+	if ($vehicule['date_suppression'] != "0000-00-00") {
+		echo 'Supprimé le  : '.date("j/m/Y", strtotime($vehicule['date_suppression'])).'<br />';
+	}
+	echo '<a href="?controller=vehicule&action=index">Afficher la liste de tous les véhicules</a><br />';
+}

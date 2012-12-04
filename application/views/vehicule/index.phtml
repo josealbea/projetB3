@@ -1,0 +1,13 @@
+<?php
+switch ($_SERVER['REQUEST_METHOD']) {
+	case "GET": 
+	do_get();
+	break;
+	case "POST":
+	do_post();
+	break;
+	default:
+	send_status(405);
+	die();
+}
+
