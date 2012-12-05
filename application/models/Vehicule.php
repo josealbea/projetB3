@@ -94,6 +94,31 @@ class Application_Model_Vehicule {
 		}
 	}
 
+	function searchVehicule($type, $recherche, $annee, $km, $prix_min, $prix_max, $energie, $boite_vitesse, $nb_places) {
+		global $bdd;
+		try {
+			$sql = $bdd->prepare("SELECT * FROM vehicule WHERE titre LIKE '%:recherche%' AND annee >= ':annee' AND km <= ':km' AND energie = ':energie' AND boite_vitesse = ':boite_vitesse' AND nb_places = ':nb_places' AND id_categorie = ':type' AND prix BETWEEN ':prix_min' AND ':prix_max' ");
+			$sql->bindValue(":recherche", $recherche);
+			$sql->bindValue(":prix_min", $prix_min);
+			$sql->bindValue(":prix_max", $prix_max);
+			$sql->bindValue(":annee", $annee);
+			$sql->bindValue(":km", $km);
+			$sql->bindValue(":energie", $energie);
+			$sql->bindValue(":boite_vitesse", $boite_vitesse);
+			$sql->bindValue(":nb_places", $nb_places);
+			//$sql->bindValue(":cylindree", $cylindree);
+			$sql->bindValue(":id_categorie", $type);
+			$result = $sql->execute();
+			if ($result) {
+				$rows = $sql->fetchAll();
+				return $rows;
+			}
+		}
+		catch (PDOException $e) {
+		    die('Erreur : '.$e->getMessage());
+		}
+		}
+
 	function setVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_categorie, $id_vehicule) {
 		global $bdd;
 		try {
@@ -112,6 +137,9 @@ class Application_Model_Vehicule {
 			if ($result) {
 				echo "L'annonce a bien été modifié";
 			}
+		}
+		catch (PDOException $e) {
+		    die('Erreur : '.$e->getMessage());
 		}
 	}
 
