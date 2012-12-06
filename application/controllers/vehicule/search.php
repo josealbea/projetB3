@@ -19,18 +19,20 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
 function init() {
 	require APPLICATION_PATH."models/Vehicule.php";
-	global $searchVehicule;
+	global $vehicule;
 	$vehicule = new Application_Model_Vehicule();
-	extract($_GET);
-	$searchVehicule = $vehicule->searchVehicule($type, $recherche, $annee, $km, $prix_min, $prix_max, $energie, $boite_vitesse, $nb_places);
-}
+	}
 
 function do_get() {
-	global $searchVehicule;
-	foreach($searchVehicule as $vehicule) {
-		echo "waaaaaa"; exit;
-		echo $vehicule['titre'];
-		echo "<br />";
+	global $vehicule;
+	if (!empty($_GET['recherche'])) {
+		extract($_GET);
+		$searchVehicule = $vehicule->searchVehicule($type, $recherche, $annee, $km, $prix_min, $prix_max, $energie, $boite_vitesse, $nb_places);
+		foreach($searchVehicule as $vehicule) {
+			echo "waaaaaa"; exit;
+			echo $vehicule['titre'];
+			echo "<br />";
+		}
 	}
 }
 

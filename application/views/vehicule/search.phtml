@@ -1,4 +1,6 @@
-<form action="<?php echo SITE_ROOT; ?>?controller=vehicule&action=search&" method="get">
+<form action="<?php echo SITE_ROOT; ?>?coucou" method="get">
+	<input type="hidden" name="controller" value="vehicule" /> 
+	<input type="hidden" name="action" value="search" /> 
 	<label for="recherche">Votre recherche</label>
 	<input type="text" name="recherche" id="recherche"><br />
 	<label for="annee">Année minimum</label>
@@ -39,8 +41,8 @@
 		</select><br />
 	</div>
 	<div id="select_moto" style="display:none;">
-		<label for="cylindree">Cylindrée</label>
-		<select name="cylindree_moto" id="cylindree">
+		<label for="cylindree_m">Cylindrée</label>
+		<select name="cylindree_moto" id="cylindree_m">
 			<option value="" selected>Sélectionnez</option>
 			<option value="50">50</option>
 			<option value="125">125</option>
@@ -50,8 +52,8 @@
 		</select><br />
 	</div>
 	<div id="select_scooter" style="display:none;">
-		<label for="cylindree">Cylindrée</label>
-		<select name="cylindree_scooter" id="cylindree">
+		<label for="cylindree_s">Cylindrée</label>
+		<select name="cylindree_scooter" id="cylindree_s">
 			<option value="" selected>Sélectionnez</option>
 			<option value="50">50</option>
 			<option value="125">125</option>

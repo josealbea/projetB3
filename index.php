@@ -1,6 +1,6 @@
 <?php 
 define("APPLICATION_PATH", dirname(__FILE__)."/application/");
-define("SITE_ROOT", "http://localhost/annonce_mcd/");
+define("SITE_ROOT", "http://localhost/projetB3/");
 
 // PDO Connect
 require APPLICATION_PATH.'configs/connect.php';
