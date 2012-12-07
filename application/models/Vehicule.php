@@ -72,7 +72,7 @@ class Application_Model_Vehicule {
 		global $bdd;
 		try {
 			$sql = $bdd->prepare("INSERT INTO vehicule (id_vehicule, titre, description, prix, annee, km, energie, date_ajout, date_modification, date_suppression, statut, boite_vitesse, nb_places, cylindree, id_membre, id_categorie) 
-			VALUES (NULL, :titre, :description, :prix, :annee, :km, :energie, curdate(), '0000-00-00', '0000-00-00', '1', :boite_vitesse, :nb_places, :cylindree, :id_membre, :id_categorie)");
+			VALUES (NULL, :titre, :description, :prix, :annee, :km, :energie, curdate(), '0000-00-00', '0000-00-00', '0', :boite_vitesse, :nb_places, :cylindree, :id_membre, :id_categorie)");
 			$sql->bindValue(":titre", ucwords(trim($titre)));
 			$sql->bindValue(":description", trim($description));
 			$sql->bindValue(":prix", $prix);
@@ -140,6 +140,29 @@ class Application_Model_Vehicule {
 		}
 		catch (PDOException $e) {
 		    die('Erreur : '.$e->getMessage());
+		}
+	}
+
+	function deleteVehiculeById($id_vehicule) {
+		global $bdd;
+		try {
+			$count = $bdd->prepare("SELECT * FROM vehicule WHERE id_vehicule = :id_vehicule");
+			$count->bindValue(":id_vehicule", $id_vehicule);
+			$count->execute();
+			if ($count->fetchColumn() < 1) {
+				echo "L'annonce avec l'id ".$id_vehicule." n'existe pas";
+			}
+			else {
+				$sql = $bdd->prepare("DELETE FROM vehicule WHERE id_vehicule = :id_vehicule");
+				$sql->bindValue(":id_vehicule", $id_vehicule);
+				$result = $sql->execute();
+				if ($result) {
+					echo "L'annonce a bien été supprimée";
+				}
+			}
+		}
+		catch (PDOException $e) {
+			die ('Erreur : '. $e->getMessage());
 		}
 	}
 

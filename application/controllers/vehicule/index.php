@@ -15,14 +15,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
 <?php
 
 function init() {
-	global $liste_vehicule;
 	require APPLICATION_PATH."models/Vehicule.php";
-	$Vehicule = new Application_Model_Vehicule();
-	$liste_vehicule = $Vehicule->getAllVehicules();
 }
 
 function do_get() {
-	global $liste_vehicule;
+	$Vehicule = new Application_Model_Vehicule();
+	$liste_vehicule = $Vehicule->getAllVehicules();
 	if (empty($_GET["vehicule"])) {
 		$erreurs[] = "typeVehiculeRequis";
 		$_GET['vehicule'] = "";       
@@ -59,6 +57,9 @@ function do_post() {
 	$erreurs = array();
 
 	parse_str(file_get_contents("php://input"), $_POST);
+	if (empty($_POST["id_categorie"])) {
+		$erreurs[] = "categorieRequise";
+	}
 	if (empty($_POST["titre"])) {
 		$erreurs[] = "titreRequis";
 	}
@@ -80,16 +81,21 @@ function do_post() {
 	if (empty($_POST["id_categorie"])) {
 		$erreur[] = "typeVehiculeRequis";
 	}
-	if (empty($_POST["boite_vitesse"])) {
-		$_POST["boite_vitesse"] = "";
+	if (!empty($_POST['id_categorie'])) {
+		if ($_POST['id_categorie'] == 1) {
+			if (empty($_POST["boite_vitesse"])) {
+				$erreur[] = "boiteVitesseRequise";
+			}
+			if (empty($_POST["nb_places"])) {
+				$erreur[] = "nbPlacesRequise";
+			}
+		}
+		if ($_POST['id_categorie'] == 2 || $_POST['id_categorie'] == 3 ) {
+			if (empty($_POST["cylindree"])) {
+				$erreur[] = "cylindreeRequise";
+			}
+		}
 	}
-	if (empty($_POST["nb_places"])) {
-		$_POST["nb_places"] = "";
-	}
-	if (empty($_POST["cylindree"])) {
-		$_POST["cylindree"] = "";
-	}
-
 	if (count($erreurs) > 0) {
 		exit_error(400, join(", ", $erreurs));
 	}

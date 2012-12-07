@@ -64,40 +64,14 @@ function do_put() {
 function do_delete() {
   global $id;
   if (!is_admin()) {
-    exit_error(401);
+    exit_error(401, "mustBeAdmin");
   }
   if (empty($_GET["id"])) {
     exit_error(400, "idRequis"); 
   }
   $id = $_GET["id"];
-  try {
-    $db = getConnexion();
-    $sql = "DELETE FROM vehicule WHERE id_vehicule=:id";
-    $stmt = $db->prepare($sql);
-    $stmt->bindValue(":id", $id);
-    $ok = $stmt->execute();
-    if ($ok) {
-      $nb = $stmt->rowCount();
-      if ($nb == 0) {
-        send_status(404);
-      }
-      else {
-        send_status(204);
-      }
-    }
-    else {
-      $erreur = $stmt->errorInfo();
-      // si artiste reference par film (realisateur) ou personnage (acteur)
-      if ($erreur[1] == 1451) { // Contrainte de cle etrangere
-        exit_error(409, "filmReferenceParTitreOuGenre");
-      }
-      else {
-        exit_error(409, $erreur[1]." : ".$erreur[2]);
-      }
-    }
-  }
-  catch (PDOException $e) {
-    exit_error(500, $e->getMessage());
-  }
+  $vehicule = new Application_Model_Vehicule;
+  $delete_vehicule = $vehicule->deleteVehiculeById($id);
+  
 }
 	?>
