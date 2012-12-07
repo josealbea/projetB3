@@ -28,10 +28,19 @@ class Application_Model_Users {
 		}
 	}
 
-	function addUser($pseudo, $password, $mail, $nom, $prenom, $ville, $code_postal, $telephone); {
+	function addUser($pseudo, $password, $mail, $nom, $prenom, $ville, $code_postal, $telephone) {
             global $bdd;
 		try {
-			$sql = $bdd->prepare("INSERT INTO membre (id_membre, pseudo, password, mail, nom, prenom, ville, code_postal, telephone, type, statut) VALUES (NULL, ':pseudo', ':password', ':mail', ':nom', ':prenom', ':ville', ':code_postal', ':telephone', '2', '0')");
+                        $ifuserexist = $bdd->prepare("SELECT * FROM membre WHERE pseudo = :pseudo OR mail = :mail");
+                        $ifuserexist->bindValue(":pseudo", $pseudo);
+                        $ifuserexist->bindValue(":mail", $mail);
+                        $ifuserexist->execute();
+                        if ($ifuserexist->fetchColumn() > 0) {
+                            echo "Désolé mais un compte avec le même pseudo ou même adresse mail est déjà présent dans la base";
+                            die;
+                        }
+                        $hash = uniqid(sha1($pseudo));
+			$sql = $bdd->prepare("INSERT INTO membre (id_membre, pseudo, password, mail, nom, prenom, ville, code_postal, telephone, type, statut, hash) VALUES (NULL, :pseudo, :password, :mail, :nom, :prenom, :ville, :code_postal, :telephone, '2', '0', :hash)");
 			$sql->bindValue(":pseudo", $pseudo);
                         $sql->bindValue(":password", $password);
                         $sql->bindValue(":mail", $mail);
@@ -40,10 +49,11 @@ class Application_Model_Users {
                         $sql->bindValue(":ville", $ville);
                         $sql->bindValue(":code_postal", $code_postal);
                         $sql->bindValue(":telephone", $telephone);
+                        $sql->bindValue(":hash", $hash);
 			$result = $sql->execute();
                         if ($result) {
-                            sendEmail($mail);
-                            echo "Le compte vient d'être créé. Toutefois, il est nécéssaire de le valider via le mail qui vous a été envoyé."
+                            $this->sendEmail($mail);
+                            echo "Le compte vient d'être créé. Toutefois, il est nécéssaire de le valider via le mail qui vous a été envoyé.";
                         }
 		}
 		catch (PDOEXCEPTION $e) {

@@ -43,7 +43,7 @@ function do_get() {
 		else {
 			echo 'Statut du compte : Banni <br />';
 		}
-		echo '<a href="'.$user['id_membre'].'-'.str_replace(" ", "-",strtolower($user['pseudo'])).'">Afficher les informations du véhicule</a><br />';
+		echo '-----------------------------------------------------<br />';
 	}
 }
 
