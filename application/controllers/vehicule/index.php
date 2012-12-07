@@ -78,22 +78,22 @@ function do_post() {
 	if (empty($_POST["energie"])) {
 		$erreurs[] = "energieRequise";
 	}
-	if (empty($_POST["id_categorie"])) {
-		$erreur[] = "typeVehiculeRequis";
-	}
 	if (!empty($_POST['id_categorie'])) {
 		if ($_POST['id_categorie'] == 1) {
 			if (empty($_POST["boite_vitesse"])) {
-				$erreur[] = "boiteVitesseRequise";
+				$erreurs[] = "boiteVitesseRequise";
 			}
 			if (empty($_POST["nb_places"])) {
-				$erreur[] = "nbPlacesRequise";
+				$erreurs[] = "nbPlacesRequise";
 			}
+			$_POST['cylindree'] = "";
 		}
 		if ($_POST['id_categorie'] == 2 || $_POST['id_categorie'] == 3 ) {
 			if (empty($_POST["cylindree"])) {
-				$erreur[] = "cylindreeRequise";
+				$erreurs[] = "cylindreeRequise";
 			}
+			$_POST['boite_vitesse'] = "";
+			$_POST['nb_places'] = "";
 		}
 	}
 	if (count($erreurs) > 0) {
