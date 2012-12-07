@@ -28,7 +28,7 @@ class Application_Model_Users {
 		}
 	}
 
-	function addMember($data) { // a faire
+	function addUser($pseudo, $password, $mail, $nom, $prenom, $ville, $code_postal, $telephone); { // a faire
 		try {
 			$sql = $bdd->prepare("INSERT INTO membre VALUES :data");
 			$sql->bindValue(":data", $data);

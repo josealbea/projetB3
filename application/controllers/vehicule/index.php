@@ -21,10 +21,6 @@ function init() {
 function do_get() {
 	$Vehicule = new Application_Model_Vehicule();
 	$liste_vehicule = $Vehicule->getAllVehicules();
-	if (empty($_GET["vehicule"])) {
-		$erreurs[] = "typeVehiculeRequis";
-		$_GET['vehicule'] = "";       
-	}
 	 foreach ($liste_vehicule as $vehicule) {
 		echo 'Titre : '.$vehicule['titre'].'<br />';
 		echo 'Prix : '.$vehicule['prix'].'<br />';

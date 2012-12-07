@@ -21,10 +21,6 @@ function init() {
 function do_get() {
 	$Users = new Application_Model_Users();
 	$liste_users = $Users->getAllUsers();
-	if (empty($_GET["vehicule"])) {
-		$erreurs[] = "typeVehiculeRequis";
-		$_GET['vehicule'] = "";       
-	}
 	 foreach ($liste_users as $user) {
 		echo 'Pseudo : '.$user['pseudo'].'<br />';
 		echo 'Adresse mail : '.$user['mail'].'<br />';
@@ -59,26 +55,29 @@ function do_post() {
 	$erreurs = array();
 
 	parse_str(file_get_contents("php://input"), $_POST);
-	if (empty($_POST["id_categorie"])) {
-		$erreurs[] = "categorieRequise";
+	if (empty($_POST["pseudo"])) {
+		$erreurs[] = "pseudoRequis";
 	}
-	if (empty($_POST["titre"])) {
-		$erreurs[] = "titreRequis";
+	if (empty($_POST["password"])) {
+		$erreurs[] = "motDePasseRequis";
 	}
-	if (empty($_POST["description"])) {
-		$erreurs[] = "descriptionRequise";
+	if (empty($_POST["mail"])) {
+		$erreurs[] = "AdresseEmailRequise";
 	}
-	if (empty($_POST["prix"])) {
-		$erreurs[] = "prixRequis";
+	if (empty($_POST["nom"])) {
+		$erreurs[] = "nomRequis";
 	}
-	if (empty($_POST["annee"])) {
-		$erreurs[] = "anneeRequise";
+	if (empty($_POST["prenom"])) {
+		$erreurs[] = "prenomRequis";
 	}
-	if (empty($_POST["km"])) {
-		$erreurs[] = "kmRequis";
+	if (empty($_POST["ville"])) {
+		$erreurs[] = "villeRequise";
 	}
-	if (empty($_POST["energie"])) {
-		$erreurs[] = "energieRequise";
+	if (empty($_POST["code_postal"])) {
+		$erreurs[] = "codePostalRequis";
+	}
+        if (empty($_POST["telephone"])) {
+		$_POST['telephone'] = "";
 	}
 
 	if (count($erreurs) > 0) {
@@ -86,8 +85,7 @@ function do_post() {
 	}
 	else {
 		extract($_POST);
-		$id_membre = $_SESSION['id_membre'];
-		$vehicule = new Application_Model_Vehicule;
-		$addVehicule = $vehicule->addVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_membre, $id_categorie);
+		$membre = new Application_Model_Users();
+		$addUser = $membre->addUser($pseudo, $password, $mail, $nom, $prenom, $ville, $code_postal, $telephone     );
 	}
 }
