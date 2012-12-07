@@ -45,7 +45,7 @@ function do_get() {
 		if ($vehicule['date_suppression'] != "0000-00-00") {
 			echo 'Supprimé le  : '.date("j/m/Y", strtotime($vehicule['date_suppression'])).'<br />';
 		}
-		echo '<a href="?controller=vehicule&action=single&id='.$vehicule['id_vehicule'].'">Afficher les informations du véhicule</a><br />';
+		echo '<a href="'.$vehicule['id_vehicule'].'-'.str_replace(" ", "-",strtolower($vehicule['titre'])).'">Afficher les informations du véhicule</a><br />';
 	}
 }
 

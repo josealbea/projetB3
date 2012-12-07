@@ -28,6 +28,6 @@ if (!empty($unVehicule)) {
 		if ($vehicule['date_suppression'] != "0000-00-00") {
 			echo 'Supprimé le  : '.date("j/m/Y", strtotime($vehicule['date_suppression'])).'<br />';
 		}
-		echo '<a href="?controller=vehicule&action=index">Afficher la liste de tous les véhicules</a><br />';
+		echo '<a href="index">Afficher la liste de tous les véhicules</a><br />';
 	}
 }
