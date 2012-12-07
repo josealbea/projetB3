@@ -58,26 +58,21 @@ class Application_Model_Users {
                 $sql->bindValue(":mail", $mail);
                 $result = $sql->execute();
                 if ($result) {
+                    $rowUser = $sql->fetch();
                     $to  = $mail;
                     $subject = SITE_NAME." - Validation de votre compte";
                     $message = '
                     <html>
                      <head>
-                      <title>Calendrier des anniversaires pour Août</title>
+                      <title>Validation de votre inscription</title>
                      </head>
                      <body>
-                      <p>Voici les anniversaires à venir au mois d\'Août !</p>
-                      <table>
-                       <tr>
-                        <th>Personne</th><th>Jour</th><th>Mois</th><th>Année</th>
-                       </tr>
-                       <tr>
-                        <td>Josiane</td><td>3</td><td>Août</td><td>1970</td>
-                       </tr>
-                       <tr>
-                        <td>Emma</td><td>26</td><td>Août</td><td>1973</td>
-                       </tr>
-                      </table>
+                      <p>Bonjour '.$rowUser['prenom'].' '.$rowUser['prenom'].' </p>
+                      <p>Pour valider votre compte, vous devez cliquez sur le lien suivant : <br />
+                        <a href="'.SITE_ROOT.'users/validation/'.$rowUser['hash'].'">'.SITE_ROOT.'users/validation/'.$rowUser['hash'].'</a><br />
+                        Copiez-coller le lien si vous ne parvenez pas a l\'ouvrir
+                      </p>
+                      <p>L\'équipe '.SITE_NAME.'</p>
                      </body>
                     </html>
                     ';
