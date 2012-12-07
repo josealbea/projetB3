@@ -86,6 +86,6 @@ function do_post() {
 	else {
 		extract($_POST);
 		$membre = new Application_Model_Users();
-		$addUser = $membre->addUser($pseudo, $password, $mail, $nom, $prenom, $ville, $code_postal, $telephone     );
+		$addUser = $membre->addUser($pseudo, $password, $mail, $nom, $prenom, $ville, $code_postal, $telephone);
 	}
 }
