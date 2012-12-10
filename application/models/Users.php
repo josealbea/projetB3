@@ -40,7 +40,7 @@ class Application_Model_Users {
                             die;
                         }
                         $hash = uniqid(sha1($pseudo));
-			$sql = $bdd->prepare("INSERT INTO membre (id_membre, pseudo, password, mail, nom, prenom, ville, code_postal, telephone, type, statut, hash) VALUES (NULL, :pseudo, :password, :mail, :nom, :prenom, :ville, :code_postal, :telephone, '2', '0', :hash)");
+			$sql = $bdd->prepare("INSERT INTO membre (id_membre, pseudo, password, mail, nom, prenom, ville, code_postal, telephone, type, statut, hash) VALUES (NULL, :pseudo, :password, :mail, :nom, :prenom, :ville, :code_postal, :telephone, '2', '2', :hash)");
 			$sql->bindValue(":pseudo", $pseudo);
                         $sql->bindValue(":password", $password);
                         $sql->bindValue(":mail", $mail);
@@ -64,7 +64,7 @@ class Application_Model_Users {
         function sendEmail($mail) {
             global $bdd;
             try {
-                $sql = $bdd->prepare("SELECT * FROM membre WHERE mail = ':mail'");
+                $sql = $bdd->prepare("SELECT * FROM membre WHERE mail = :mail");
                 $sql->bindValue(":mail", $mail);
                 $result = $sql->execute();
                 if ($result) {
@@ -77,7 +77,7 @@ class Application_Model_Users {
                       <title>Validation de votre inscription</title>
                      </head>
                      <body>
-                      <p>Bonjour '.$rowUser['prenom'].' '.$rowUser['prenom'].' </p>
+                      <p>Bonjour '.$rowUser['prenom'].' '.$rowUser['nom'].' </p>
                       <p>Pour valider votre compte, vous devez cliquez sur le lien suivant : <br />
                         <a href="'.SITE_ROOT.'users/validation/'.$rowUser['hash'].'">'.SITE_ROOT.'users/validation/'.$rowUser['hash'].'</a><br />
                         Copiez-coller le lien si vous ne parvenez pas a l\'ouvrir
@@ -88,9 +88,44 @@ class Application_Model_Users {
                     ';
                     $headers  = 'MIME-Version: 1.0' . "\r\n";
                     $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-                    $headers .= 'Reply-To: José de'.SITE_NAME.'<jose.albea@gmail.com>' ."\r\n";
+                    $headers .= 'From: José de '.SITE_NAME.'<jose.albea@gmail.com>' ."\r\n";
                     $headers .= 'Service inscription '.SITE_NAME."\r\n";
                     mail($to, $subject, $message, $headers);
+                }
+            }
+            catch(PDOException $e) {
+                die('Erreur : '.$e->getMessage());
+            }
+        }
+        
+        function validateAccount($hash) {
+            global $bdd;
+            try {
+                $sql = $bdd->prepare("SELECT * FROM membre WHERE hash = :hash");
+                $sql->bindValue(":hash", $hash);
+                $result = $sql->execute();
+                $fetchUser = $sql->fetch();
+                if ($result) {
+                    $rowUser = $sql->fetchColumn();
+                    if ($rowUser > 0) {
+                        switch($fetchUser['statut']) {
+                            case "0":
+                                return $validate = 0;
+                            break;
+                            case "1":
+                                return $validate = 1;
+                            break;
+                            case "2":
+                                $update = $bdd->prepare("UPDATE membre SET statut = '1' WHERE hash = :hash");
+                                $update->bindValue(":hash", $hash);
+                                $result = $update->execute();
+                                if ($result) {
+                                    return $validate = 2;
+                                }
+                            
+                        }
+                    }
+                    
                 }
             }
             catch(PDOException $e) {
