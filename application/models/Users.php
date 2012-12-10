@@ -36,8 +36,7 @@ class Application_Model_Users {
                         $ifuserexist->bindValue(":mail", $mail);
                         $ifuserexist->execute();
                         if ($ifuserexist->fetchColumn() > 0) {
-                            echo "Désolé mais un compte avec le même pseudo ou même adresse mail est déjà présent dans la base";
-                            die;
+                            return false;
                         }
                         $hash = uniqid(sha1($pseudo));
 			$sql = $bdd->prepare("INSERT INTO membre (id_membre, pseudo, password, mail, nom, prenom, ville, code_postal, telephone, type, statut, hash) VALUES (NULL, :pseudo, :password, :mail, :nom, :prenom, :ville, :code_postal, :telephone, '2', '2', :hash)");
@@ -53,7 +52,7 @@ class Application_Model_Users {
 			$result = $sql->execute();
                         if ($result) {
                             $this->sendEmail($mail);
-                            echo "Le compte vient d'être créé. Toutefois, il est nécéssaire de le valider via le mail qui vous a été envoyé.";
+                            return true;  
                         }
 		}
 		catch (PDOEXCEPTION $e) {

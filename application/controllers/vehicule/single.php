@@ -40,7 +40,6 @@ function do_get() {
 }
 
 function do_put() {
-  global $id;
   if (!is_admin()) {
     exit_error(401, "mustBeAdmin");
   }
@@ -58,6 +57,12 @@ function do_put() {
     global $unVehicule;
     $vehicule = new Application_Model_Vehicule();
     $unVehicule = $vehicule->setVehicule($_PUT['id']);
+    if ($unVehicule) {
+        echo "L'annonce a bien été modifiée";
+    }
+    else {
+        echo "L'id de l'annonce n'existe pas dans notre base";
+    }
   }
 }
 
@@ -72,6 +77,12 @@ function do_delete() {
   $id = $_GET["id"];
   $vehicule = new Application_Model_Vehicule;
   $delete_vehicule = $vehicule->deleteVehiculeById($id);
+  if ($delete_vehicule) {
+      echo "L'annonce a bien été supprimée.";
+  }
+  else {
+      echo "L'id de l'annonce n'existe pas dans notre base";
+  }
   
 }
 	?>
