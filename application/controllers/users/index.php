@@ -19,32 +19,9 @@ function init() {
 }
 
 function do_get() {
+	global $liste_users;
 	$Users = new Application_Model_Users();
 	$liste_users = $Users->getAllUsers();
-	 foreach ($liste_users as $user) {
-		echo 'Pseudo : '.$user['pseudo'].'<br />';
-		echo 'Adresse mail : '.$user['mail'].'<br />';
-		echo 'Nom : '.utf8_decode($user['nom']).'<br />';
-		echo 'Prénom : '.$user['prenom'].'<br />';
-		echo 'Ville : '.$user['ville'].' '.$user['code_postal'].'<br />';
-		echo 'Téléphone : '.$user['telephone'].'<br />';
-		if ($user['type'] == 1) {
-			echo 'Type de membre : Administrateur <br />';
-		}
-		else {
-			echo 'Type de membre : Membre basique <br />';
-		}
-		if ($user['statut'] == 1) {
-			echo 'Statut du compte : Actif <br />';
-		}
-		else if ($user['statut'] == 2) {
-			echo 'Statut du compte : En attente de validation <br />';
-		}
-		else {
-			echo 'Statut du compte : Banni <br />';
-		}
-		echo '-----------------------------------------------------<br />';
-	}
 }
 
 // FONCTION POST

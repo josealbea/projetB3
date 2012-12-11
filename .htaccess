@@ -3,5 +3,7 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^index.php [L]
 RewriteRule ^([a-z]+)\/([a-z]+)$ 	index.php?controller=$1&action=$2 [L]
+RewriteRule ^([a-z]+)\/validation\/([a-z0-9]+)$ 	index.php?controller=$1&action=validation&hash=$3 [L]
+RewriteRule ^([a-z]+)\/single\/([a-z0-9]+)$ 	index.php?controller=$1&action=single&id=$2 [L]
 RewriteRule ^([a-z]+)$ 	index.php?controller=$1&action=index [L]
 RewriteRule ^vehicule/([0-9]+)-([a-z0-9-]+)$ 	index.php?controller=vehicule&action=single&id=$1 [L]
