@@ -17,12 +17,13 @@ class Application_Model_Users {
 
 	function getAllUsers() {
 		global $bdd;
+                
 		try {
 			$sql = $bdd->prepare("SELECT * FROM membre");
 			$result = $sql->execute();
 			if ($result) {
 				$rows = $sql->fetchAll();
-				return $rows;
+                                return $rows;
 			}
 		}
 		catch (PDOEXCEPTION $e) {

@@ -37,6 +37,7 @@ function do_get() {
   global $unMembre;
   $membre = new Application_Model_Users();
   $unMembre = $membre->getUser($_GET['id']);
+  
 }
 
 function do_put() {
