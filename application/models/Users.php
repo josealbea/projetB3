@@ -24,6 +24,7 @@ class Application_Model_Users {
 			if ($result) {
 				$rows = $sql->fetchAll();
                                 return $rows;
+                                
 			}
 		}
 		catch (PDOEXCEPTION $e) {
