@@ -8,7 +8,7 @@ class Application_Model_Vehicule {
                     $sql->bindValue(':id_vehicule', $id_vehicule);
                     $result = $sql->execute();
                     if ($result) {
-                            $rows = $sql->fetch();
+                            $rows = $sql->fetchAll();
                             return $rows;
                     }
 		}

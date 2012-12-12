@@ -46,8 +46,41 @@ function do_put() {
   $erreurs = array();
   // Les parametres passés en put
   parse_str(file_get_contents("php://input"), $_PUT);
-  if (empty($_PUT["id"])) {
+  if (empty($_GET["id"])) {
     $erreurs[] = "idRequis";
+  }
+  if (empty($_POST["description"])) {
+    $erreurs[] = "descriptionRequise";
+  }
+  if (empty($_POST["prix"])) {
+    $erreurs[] = "prixRequis";
+  }
+  if (empty($_POST["annee"])) {
+    $erreurs[] = "anneeRequise";
+  }
+  if (empty($_POST["km"])) {
+    $erreurs[] = "kmRequis";
+  }
+  if (empty($_POST["energie"])) {
+    $erreurs[] = "energieRequise";
+  }
+  if (!empty($_POST['id_categorie'])) {
+    if ($_POST['id_categorie'] == 1) {
+      if (empty($_POST["boite_vitesse"])) {
+        $erreurs[] = "boiteVitesseRequise";
+      }
+      if (empty($_POST["nb_places"])) {
+        $erreurs[] = "nbPlacesRequise";
+      }
+      $_POST['cylindree'] = "";
+    }
+    if ($_POST['id_categorie'] == 2 || $_POST['id_categorie'] == 3 ) {
+      if (empty($_POST["cylindree"])) {
+        $erreurs[] = "cylindreeRequise";
+      }
+      $_POST['boite_vitesse'] = "";
+      $_POST['nb_places'] = "";
+    }
   }
  
   if (count($erreurs) > 0) {
@@ -56,7 +89,7 @@ function do_put() {
   else {
     global $unVehicule;
     $vehicule = new Application_Model_Vehicule();
-    $unVehicule = $vehicule->setVehicule($_PUT['id']);
+    $unVehicule = $vehicule->setVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_categorie, $id_vehicule);
     if ($unVehicule) {
         echo "L'annonce a bien été modifiée";
     }
