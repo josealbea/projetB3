@@ -60,18 +60,42 @@ function do_put() {
   $erreurs = array();
   // Les parametres passés en put
   parse_str(file_get_contents("php://input"), $_PUT);
-  if (empty($_PUT["id"])) {
-    $erreurs[] = "idRequis";
-  }
+    if (empty($_PUT["id"])) {
+      $erreurs[] = "idRequis";
+    }
+    if (empty($_POST["pseudo"])) {
+            $erreurs[] = "pseudoRequis";
+    }
+    if (empty($_POST["password"])) {
+            $erreurs[] = "motDePasseRequis";
+    }
+    if (empty($_POST["mail"])) {
+            $erreurs[] = "AdresseEmailRequise";
+    }
+    if (empty($_POST["nom"])) {
+            $erreurs[] = "nomRequis";
+    }
+    if (empty($_POST["prenom"])) {
+            $erreurs[] = "prenomRequis";
+    }
+    if (empty($_POST["ville"])) {
+            $erreurs[] = "villeRequise";
+    }
+    if (empty($_POST["code_postal"])) {
+            $erreurs[] = "codePostalRequis";
+    }
+    if (empty($_POST["telephone"])) {
+            $_POST['telephone'] = "";
+    }
  
   if (count($erreurs) > 0) {
     exit_error(400, join(", ", $erreurs));
   }
   else {
-    global $unMembre;
+    global $editUser;
     $membre = new Application_Model_Users();
-    $unMembre = $membre->setUser($_PUT['id']);
-    if ($unMembre) {
+    $editUser = $membre->addUser($_POST["pseudo"], $_POST["password"], $_POST["mail"], $_POST["nom"], $_POST["prenom"], $_POST["ville"], $_POST["code_postal"], $_POST["telephone"]);
+	if ($editUser) {
         echo "Le membre a bien été modifiée";
     }
     else {
