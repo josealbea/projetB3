@@ -35,8 +35,21 @@ function init() {
 }
 function do_get() {
   global $unMembre;
-  $membre = new Application_Model_Users();
-  $unMembre = $membre->getUser($_GET['id']);
+  $mMembre = new Application_Model_Users();
+  $unMembre = $mMembre->getUser($_GET['id']);
+  $row = $unMembre;
+        $dom = new DOMDocument();
+          $membre = $dom->createElement("membre");
+          $dom->appendChild($membre);
+          $membre->setAttribute("id", $row['id_membre']);
+          $membre->setAttribute("pseudo", $row['pseudo']);
+          $membre->setAttribute("adresse_mail", $row['mail']);
+          $membre->setAttribute("nom", utf8_decode($row['nom']));
+          $membre->setAttribute("prenom",  utf8_decode($row['prenom']));
+          $membre->setAttribute("ville", utf8_encode($row['ville']));
+          $membre->setAttribute("code_postal", $row['code_postal']);
+          $membre->setAttribute("telephone", $row['telephone']);
+          print $dom->saveXML();
   
 }
 

@@ -22,6 +22,34 @@ function do_get() {
         global $liste_vehicule;
 	$Vehicule = new Application_Model_Vehicule();
 	$liste_vehicule = $Vehicule->getAllVehicules();
+        $dom = new DOMDocument();
+        $vehicules = $dom->createElement("vehicules");
+        $dom->appendChild($vehicules);
+        foreach($liste_vehicule as $row){
+          $vehicule = $dom->createElement("vehicule");
+          $vehicules->appendChild($vehicule);
+          $vehicule->setAttribute("id", $row['id_vehicule']);
+          $vehicule->setAttribute("titre", utf8_encode($row['titre']));
+          $vehicule->setAttribute("description", utf8_encode($row['description']));
+          $vehicule->setAttribute("prix", utf8_encode($row['prix']));
+          $vehicule->setAttribute("km", utf8_encode($row['km']));
+          $vehicule->setAttribute("annee", utf8_encode($row['annee']));
+          $vehicule->setAttribute("energie", utf8_encode($row['energie']));
+          $vehicule->setAttribute("boite_vitesse", utf8_encode($row['boite_vitesse']));
+          if ($row['id_categorie'] ==  1) {
+              $vehicule->setAttribute("type_vehicule", "voiture");
+              $vehicule->setAttribute("nb_places", utf8_encode($row['nb_places']));
+          }
+          elseif ($row['id_categorie'] ==  2) {
+              $vehicule->setAttribute("type_vehicule", "moto");
+              $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
+          }
+          elseif ($row['id_categorie'] ==  3) {
+              $vehicule->setAttribute("type_vehicule", "scooter");
+              $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
+          }
+          }
+          print $dom->saveXML();
 }
 
 // FONCTION POST
@@ -78,6 +106,6 @@ function do_post() {
 		extract($_POST);
 		$id_membre = $_SESSION['id_membre'];
 		$vehicule = new Application_Model_Vehicule;
-		$vehicule->addVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_membre, $id_categorie);
+		$vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $id_membre, $_POST['id_categorie']);
 	}
 }

@@ -8,8 +8,8 @@ class Application_Model_Vehicule {
                     $sql->bindValue(':id_vehicule', $id_vehicule);
                     $result = $sql->execute();
                     if ($result) {
-                            $rows = $sql->fetchAll();
-                            return $rows;
+                            $row = $sql->fetch(PDO::FETCH_ASSOC);
+                            return $row;
                     }
 		}
 		catch (PDOException $e) {

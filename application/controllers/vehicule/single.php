@@ -34,10 +34,35 @@ function init() {
 	}
 }
 function do_get() {
-  global $unVehicule;
-	$vehicule = new Application_Model_Vehicule();
-	$unVehicule = $vehicule->getVehicule($_GET['id']);
-}
+    global $unVehicule;
+    $mVehicule = new Application_Model_Vehicule();
+    $unVehicule = $mVehicule->getVehicule($_GET['id']);
+    $row = $unVehicule;
+    $dom = new DOMDocument();
+      $vehicule = $dom->createElement("vehicule");
+      $dom->appendChild($vehicule);
+      $vehicule->setAttribute("id", $row['id_vehicule']);
+      $vehicule->setAttribute("titre", utf8_encode($row['titre']));
+      $vehicule->setAttribute("description", utf8_encode($row['description']));
+      $vehicule->setAttribute("prix", utf8_encode($row['prix']));
+      $vehicule->setAttribute("km", utf8_encode($row['km']));
+      $vehicule->setAttribute("annee", utf8_encode($row['annee']));
+      $vehicule->setAttribute("energie", utf8_encode($row['energie']));
+      $vehicule->setAttribute("boite_vitesse", utf8_encode($row['boite_vitesse']));
+      if ($row['id_categorie'] ==  1) {
+          $vehicule->setAttribute("type_vehicule", "voiture");
+          $vehicule->setAttribute("nb_places", utf8_encode($row['nb_places']));
+      }
+      elseif ($row['id_categorie'] ==  2) {
+          $vehicule->setAttribute("type_vehicule", "moto");
+          $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
+      }
+      elseif ($row['id_categorie'] ==  3) {
+          $vehicule->setAttribute("type_vehicule", "scooter");
+          $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
+      }
+      print $dom->saveXML();
+    }
 
 function do_put() {
   if (!is_admin()) {

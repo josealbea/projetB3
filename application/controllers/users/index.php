@@ -22,6 +22,37 @@ function do_get() {
 	global $liste_users;
 	$Users = new Application_Model_Users();
 	$liste_users = $Users->getAllUsers();
+        $dom = new DOMDocument();
+        $users = $dom->createElement("utilisateurs");
+        $dom->appendChild($users);
+        foreach($liste_users as $row){
+          $user = $dom->createElement("utilisateur");
+          $users->appendChild($user);
+          $user->setAttribute("id", $row['id_membre']);
+          $user->setAttribute("pseudo", $row['pseudo']);
+          $user->setAttribute("adresse_mail", $row['mail']);
+          $user->setAttribute("nom", utf8_decode($row['nom']));
+          $user->setAttribute("prenom",  utf8_decode($row['prenom']));
+          $user->setAttribute("ville", utf8_encode($row['ville']));
+          $user->setAttribute("code_postal", $row['code_postal']);
+          $user->setAttribute("telephone", $row['telephone']);
+          if ($row['type'] == 1) {
+              $user->setAttribute("type_compte", "administrateur");
+          }
+          else if ($row['type'] == 2) {
+              $user->setAttribute("type_compte", "Membre basique");
+          }
+          if ($row['statut'] == 0) {
+              $user->setAttribute("statut_compte", "Compte banni");
+          }
+          else if ($row['statut'] == 1) {
+              $user->setAttribute("statut_compte", "Compte validé");
+          }
+          else if ($row['statut'] == 2) {
+              $user->setAttribute("statut_compte", "En attente de validation");
+          }
+        }
+        print $dom->saveXML();
 }
 
 // FONCTION POST

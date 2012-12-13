@@ -6,9 +6,11 @@ class Application_Model_Users {
 		try {
 			$sql = $bdd->prepare("SELECT * FROM membre WHERE id_membre = :id_user");
 			$sql->bindValue(":id_user", $id_user);
-			$sql->execute();
-                        $row = $sql->fetchAll();
-                        return $row;
+			$result = $sql->execute();
+                        if ($result) {
+                            $row = $sql->fetch(PDO::FETCH_ASSOC);
+                            return $row;
+                        }
 		}
 		catch (PDOEXCEPTION $e) {
 			die('Erreur : '.$e->getMessage());
