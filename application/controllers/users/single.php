@@ -60,9 +60,6 @@ function do_put() {
   $erreurs = array();
   // Les parametres passés en put
   parse_str(file_get_contents("php://input"), $_PUT);
-    if (empty($_PUT["id"])) {
-      $erreurs[] = "idRequis";
-    }
     if (empty($_PUT["pseudo"])) {
             $erreurs[] = "pseudoRequis";
     }
@@ -85,7 +82,7 @@ function do_put() {
             $erreurs[] = "codePostalRequis";
     }
     if (empty($_PUT["telephone"])) {
-            $_POST['telephone'] = "";
+            $erreurs[] = "telephoneRequis";
     }
  
   if (count($erreurs) > 0) {
@@ -94,12 +91,13 @@ function do_put() {
   else {
     global $editUser;
     $membre = new Application_Model_Users();
-    $editUser = $membre->addUser($_POST["pseudo"], $_POST["password"], $_POST["mail"], $_POST["nom"], $_POST["prenom"], $_POST["ville"], $_POST["code_postal"], $_POST["telephone"]);
-	if ($editUser) {
-        echo "Le membre a bien été modifiée";
+    $id = $_GET["id"];
+    $editUser = $membre->setUser($_PUT["pseudo"], $_PUT["password"], $_PUT["mail"], $_PUT["nom"], $_PUT["prenom"], $_PUT["ville"], $_PUT["code_postal"], $_PUT["telephone"], $id);
+    if ($editUser) {
+        send_status(200);
     }
     else {
-        echo "L'id du membre n'existe pas dans notre base";
+        send_status(404);
     }
   }
 }
@@ -116,10 +114,10 @@ function do_delete() {
   $membre = new Application_Model_Users;
   $delete_membre = $membre->deleteMembreById($id);
   if ($delete_membre) {
-      echo "Le membre a bien été supprimée.";
+      send_status(200);
   }
   else {
-      echo "L'id du membre n'existe pas dans notre base";
+      send_status(404);
   }
   
 }

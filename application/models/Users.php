@@ -70,7 +70,7 @@ class Application_Model_Users {
     function setUser($pseudo, $password, $mail, $nom, $prenom, $ville, $code_postal, $telephone, $id_membre) {
         global $bdd;
         try {
-                    $sql = $bdd->prepare("UPDATE membre SET pseudo = ':pseudo', password = ':password', mail = ':mail', nom = ':nom', prenom = ':prenom', ville = ':ville', code_postal = ':code_postal', telephone = ':telephone' WHERE id_membre = ':id_membre");
+                    $sql = $bdd->prepare("UPDATE membre SET pseudo = :pseudo, password = :password, mail = :mail, nom = :nom, prenom = :prenom, ville = :ville, code_postal = :code_postal, telephone = :telephone WHERE id_membre = :id_membre");
                     $sql->bindValue(":pseudo", $pseudo);
                     $sql->bindValue(":password", $password);
                     $sql->bindValue(":mail", $mail);
