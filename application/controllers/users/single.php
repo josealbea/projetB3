@@ -63,28 +63,28 @@ function do_put() {
     if (empty($_PUT["id"])) {
       $erreurs[] = "idRequis";
     }
-    if (empty($_POST["pseudo"])) {
+    if (empty($_PUT["pseudo"])) {
             $erreurs[] = "pseudoRequis";
     }
-    if (empty($_POST["password"])) {
+    if (empty($_PUT["password"])) {
             $erreurs[] = "motDePasseRequis";
     }
-    if (empty($_POST["mail"])) {
+    if (empty($_PUT["mail"])) {
             $erreurs[] = "AdresseEmailRequise";
     }
-    if (empty($_POST["nom"])) {
+    if (empty($_PUT["nom"])) {
             $erreurs[] = "nomRequis";
     }
-    if (empty($_POST["prenom"])) {
+    if (empty($_PUT["prenom"])) {
             $erreurs[] = "prenomRequis";
     }
-    if (empty($_POST["ville"])) {
+    if (empty($_PUT["ville"])) {
             $erreurs[] = "villeRequise";
     }
-    if (empty($_POST["code_postal"])) {
+    if (empty($_PUT["code_postal"])) {
             $erreurs[] = "codePostalRequis";
     }
-    if (empty($_POST["telephone"])) {
+    if (empty($_PUT["telephone"])) {
             $_POST['telephone'] = "";
     }
  
