@@ -117,7 +117,7 @@ function do_put() {
   else {
     global $unVehicule;
     $vehicule = new Application_Model_Vehicule();
-    $unVehicule = $vehicule->setVehicule($_PUT['titre'], $_PUT['description'], $_PUT['prix'], $_PUT['annee'], $_PUT['km'], $_PUT['energie'], $_PUT['boite_vitesse'], $_PUT['nb_places'], $_PUT['cylindree'], $_PUT['id_categorie'], $_GET['id']);
+    $unVehicule = $vehicule->setVehicule($_PUT['titre'], $_PUT['description'], $_PUT['prix'], $_PUT['annee'], $_PUT['km'], $_PUT['energie'], $_PUT['boite_vitesse'], $_PUT['nb_places'], $_PUT['cylindree'], $_GET['id']);
     if ($unVehicule) {
         send_status(200);
     }

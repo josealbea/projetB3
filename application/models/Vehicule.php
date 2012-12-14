@@ -144,7 +144,7 @@ class Application_Model_Vehicule {
 		}
 		}
 
-	function setVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_categorie, $id_vehicule) {
+	function setVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_vehicule) {
 		global $bdd;
 		try {
                     if (!self::ifVehiculeExist($id_vehicule)) {
@@ -163,7 +163,6 @@ class Application_Model_Vehicule {
                         $sql->bindValue(":boite_vitesse", $boite_vitesse);
                         $sql->bindValue(":nb_places", $nb_places);
                         $sql->bindValue(":cylindree", $cylindree);
-                        $sql->bindValue(":id_categorie", $id_categorie);
                         $sql->bindValue(":id_vehicule", $id_vehicule);
                         $result = $sql->execute();
                         if ($result) {
