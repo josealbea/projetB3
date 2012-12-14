@@ -109,3 +109,68 @@ function do_post() {
 		$vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $id_membre, $_POST['id_categorie']);
 	}
 }
+
+function check_extension($ext) {
+    $ext_aut = array('jpg','jpeg','png','gif');
+    if(in_array($ext,$ext_aut))
+    {
+        return true;
+    }
+}
+
+function addImage($image, $id_vehicule) {
+    var_dump($image);
+    $nom_image = $image['name'];
+    $ext = strtolower(substr(strrchr($nom_image,'.'),1));
+    if (!self::check_extension($ext)) {
+        return false;
+    }
+    $valid = (!self::check_extension($ext)) ? false : true;
+    $erreur = (!self::check_extension($ext)) ? 'Veuillez charger une image' : '';
+    
+    if($valid)
+    {
+        $max_size = 2000000;
+        if($image['size']>$max_size)
+        {
+            $valid = false;
+            $erreur = 'Fichier trop gros';
+        }
+    }
+    
+    if($valid)
+    {
+        if($image['error']>0)
+        {
+            $valid = false;
+            $erreur = 'Erreur lors du transfert';
+        }
+    }
+    
+    if($valid)
+    {
+        $path_to_image = '../public/uploads/';
+        $path_to_min = '../public/uploads/min/';
+        
+        $filename = uniqid($nom_image);
+        
+        $source = $fichier['tmp_name'];
+        $target = $path_to_image . $filename. '.'. $ext;
+        
+        move_uploaded_file($source,$target);
+        
+        if($ext == 'jpg' || $ext == 'jpeg') {$im = imagecreatefromjpeg($path_to_image.$filename.'.'.$ext);}
+        if($ext == 'png') {$im = imagecreatefrompng($path_to_image.$filename.'.'.$ext);}
+        if($ext == 'gif') { $im = imagecreatefromgif($path_to_image.$filename.'.'.$ext);}
+        
+        $ox = imagesx($im);
+        $oy = imagesy($im);
+        $nx = 304;
+        $ny = floor($oy *($nx/$ox));
+        $nm = imagecreatetruecolor($nx,$ny);
+        imagecopyresized($nm, $im, 0,0,0,0, $nx,$ny,$ox,$oy);
+        imagejpeg($nm, $path_to_min.$filename.'.'.$ext);
+        
+        $nom_image = $filename.'.'.$ext;
+        }
+    }
