@@ -16,7 +16,7 @@ require_once APPLICATION_PATH.'dispatcher.php';
 // Erreurs status 
 require_once APPLICATION_PATH.'configs/rest.php';
 
-$controller = isset($_GET['controller'])?$_GET['controller']:'accueil';
+$controller = isset($_GET['controller'])?$_GET['controller']:'vehicule';
 $action = isset($_GET['action'])?$_GET['action']:'index';
 
 include_once APPLICATION_PATH.'controllers/'.$controller.'/'.$action.'.php';
