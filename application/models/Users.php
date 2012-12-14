@@ -1,9 +1,31 @@
 <?php 
 class Application_Model_Users {
+    
+        function ifUserExist($id_user) {
+            global $bdd;
+            try {
+                $count = $bdd->prepare("SELECT * FROM membre WHERE id_membre = :id_user");
+                $count->bindValue(":id_user", $id_user);
+                $count->execute();
+                if ($count->fetchColumn() < 1) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+            catch(PDOException $e) {
+                die("Erreur :". $e->getMessage());
+            }
+        }
 	
 	function getUser($id_user) {
 		global $bdd;
 		try {
+                    if (!self::ifUserExist($id_user)) {
+                        send_status(404);
+                    }
+                    else {
 			$sql = $bdd->prepare("SELECT * FROM membre WHERE id_membre = :id_user");
 			$sql->bindValue(":id_user", $id_user);
 			$result = $sql->execute();
@@ -11,6 +33,7 @@ class Application_Model_Users {
                             $row = $sql->fetch(PDO::FETCH_ASSOC);
                             return $row;
                         }
+                    }
 		}
 		catch (PDOEXCEPTION $e) {
 			die('Erreur : '.$e->getMessage());
@@ -69,25 +92,31 @@ class Application_Model_Users {
 
     function setUser($pseudo, $password, $mail, $nom, $prenom, $ville, $code_postal, $telephone, $id_membre) {
         global $bdd;
+        
         try {
-                    $sql = $bdd->prepare("UPDATE membre SET pseudo = :pseudo, password = :password, mail = :mail, nom = :nom, prenom = :prenom, ville = :ville, code_postal = :code_postal, telephone = :telephone WHERE id_membre = :id_membre");
-                    $sql->bindValue(":pseudo", $pseudo);
-                    $sql->bindValue(":password", $password);
-                    $sql->bindValue(":mail", $mail);
-                    $sql->bindValue(":nom", $nom);
-                    $sql->bindValue(":prenom", $prenom);
-                    $sql->bindValue(":ville", $ville);
-                    $sql->bindValue(":code_postal", $code_postal);
-                    $sql->bindValue(":telephone", $telephone);
-                    $sql->bindValue(":id_membre", $id_membre);
-                    $result = $sql->execute();
-                    if ($result) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
+            if (!self::ifUserExist($id_membre)) {
+                send_status(404);
+            }
+            else {
+                $sql = $bdd->prepare("UPDATE membre SET pseudo = :pseudo, password = :password, mail = :mail, nom = :nom, prenom = :prenom, ville = :ville, code_postal = :code_postal, telephone = :telephone WHERE id_membre = :id_membre");
+                $sql->bindValue(":pseudo", $pseudo);
+                $sql->bindValue(":password", $password);
+                $sql->bindValue(":mail", $mail);
+                $sql->bindValue(":nom", $nom);
+                $sql->bindValue(":prenom", $prenom);
+                $sql->bindValue(":ville", $ville);
+                $sql->bindValue(":code_postal", $code_postal);
+                $sql->bindValue(":telephone", $telephone);
+                $sql->bindValue(":id_membre", $id_membre);
+                $result = $sql->execute();
+                if ($result) {
+                    return true;
                 }
+                else {
+                    return false;
+                }
+            }
+        }
         catch (PDOException $e) {
             die('Erreur : '.$e->getMessage());
         }
@@ -96,11 +125,8 @@ class Application_Model_Users {
     function deleteMembreById($id_membre) {
         global $bdd;
         try {
-                    $count = $bdd->prepare("SELECT * FROM membre WHERE id_membre = :id_membre");
-                    $count->bindValue(":id_membre", $id_membre);
-                    $count->execute();
-                    if ($count->fetchColumn() < 1) {
-                        return false;
+                    if (!self::ifUserExist($id_membre)) {
+                        send_status(404);
                     }
                     else {
                         $sql = $bdd->prepare("DELETE FROM membre WHERE id_membre = :id_membre");

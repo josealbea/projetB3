@@ -1,5 +1,5 @@
 <?php 
-header("Content-type: text/xml;charset=UTF-8");
+header("Content-type: text/html;charset=UTF-8");
 define("APPLICATION_PATH", dirname(__FILE__)."/application/");
 define("SITE_ROOT", "http://localhost/projetB3/");
 define("SITE_NAME", "Acheter son véhicule");

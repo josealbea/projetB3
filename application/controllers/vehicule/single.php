@@ -74,37 +74,40 @@ function do_put() {
   if (empty($_GET["id"])) {
     $erreurs[] = "idRequis";
   }
-  if (empty($_POST["description"])) {
+  if (empty($_PUT['id_categorie'])) {
+      $erreurs[] = "idCategorieRequise";
+  }
+  if (empty($_PUT["description"])) {
     $erreurs[] = "descriptionRequise";
   }
-  if (empty($_POST["prix"])) {
+  if (empty($_PUT["prix"])) {
     $erreurs[] = "prixRequis";
   }
-  if (empty($_POST["annee"])) {
+  if (empty($_PUT["annee"])) {
     $erreurs[] = "anneeRequise";
   }
-  if (empty($_POST["km"])) {
+  if (empty($_PUT["km"])) {
     $erreurs[] = "kmRequis";
   }
-  if (empty($_POST["energie"])) {
+  if (empty($_PUT["energie"])) {
     $erreurs[] = "energieRequise";
   }
-  if (!empty($_POST['id_categorie'])) {
-    if ($_POST['id_categorie'] == 1) {
-      if (empty($_POST["boite_vitesse"])) {
+  if (!empty($_PUT['id_categorie'])) {
+    if ($_PUT['id_categorie'] == 1) {
+      if (empty($_PUT["boite_vitesse"])) {
         $erreurs[] = "boiteVitesseRequise";
       }
-      if (empty($_POST["nb_places"])) {
+      if (empty($_PUT["nb_places"])) {
         $erreurs[] = "nbPlacesRequise";
       }
-      $_POST['cylindree'] = "";
+      $_PUT['cylindree'] = NULL;
     }
-    if ($_POST['id_categorie'] == 2 || $_POST['id_categorie'] == 3 ) {
-      if (empty($_POST["cylindree"])) {
+    if ($_PUT['id_categorie'] == 2 || $_PUT['id_categorie'] == 3 ) {
+      if (empty($_PUT["cylindree"])) {
         $erreurs[] = "cylindreeRequise";
       }
-      $_POST['boite_vitesse'] = "";
-      $_POST['nb_places'] = "";
+      $_PUT['boite_vitesse'] = NULL;
+      $_PUT['nb_places'] = NULL;
     }
   }
  
@@ -114,12 +117,12 @@ function do_put() {
   else {
     global $unVehicule;
     $vehicule = new Application_Model_Vehicule();
-    $unVehicule = $vehicule->setVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_categorie, $id_vehicule);
+    $unVehicule = $vehicule->setVehicule($_PUT['titre'], $_PUT['description'], $_PUT['prix'], $_PUT['annee'], $_PUT['km'], $_PUT['energie'], $_PUT['boite_vitesse'], $_PUT['nb_places'], $_PUT['cylindree'], $_PUT['id_categorie'], $_GET['id']);
     if ($unVehicule) {
-        echo "L'annonce a bien été modifiée";
+        send_status(200);
     }
     else {
-        echo "L'id de l'annonce n'existe pas dans notre base";
+        send_status(404);
     }
   }
 }
@@ -134,12 +137,12 @@ function do_delete() {
   }
   $id = $_GET["id"];
   $vehicule = new Application_Model_Vehicule;
-  $delete_vehicule = $vehicule->deleteVehiculeById($id);
+  $delete_vehicule = $vehicule->deleteVehicule($id);
   if ($delete_vehicule) {
-      echo "L'annonce a bien été supprimée.";
+      send_status(200);
   }
   else {
-      echo "L'id de l'annonce n'existe pas dans notre base";
+      send_status(404);
   }
   
 }

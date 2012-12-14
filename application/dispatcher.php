@@ -5,5 +5,4 @@ class Dispatcher {
 		$getcontroller = APPLICATION_PATH.'/controllers/'.$controller.'/'.$action.'.php';
 		$getview = APPLICATION_PATH.'/views/'.$controller.'/'.$action.'.php';
 	}
-	//include($getcontroller);
 }
