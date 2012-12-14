@@ -62,11 +62,18 @@ class Application_Model_Vehicule {
 		}
 	}
 
-	function getAllVehiculesByMember($id_member) {
+	function getAllVehiculesByMember($id_member, $page) {
 		global $bdd;
 		try {
-                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_membre = :id_member");
+                    if (empty($page)) {
+                        $page = 1;
+                    }
+                    $limit_min = $page - 1 * 10;
+                    $limit_max = $page * 10;
+                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_membre = :id_member LIMIT :limit_min , :limit_max");
                     $sql->bindValue(':id_member', $id_member);
+                    $sql->bindValue(':limit_min', $limit_min);
+                    $sql->bindValue(':limit_max', $limit_max);
                     $result = $sql->execute();
                     if ($result) {
                             $rows = $sql->fetchAll();
@@ -78,11 +85,18 @@ class Application_Model_Vehicule {
 		}
 	}
 
-	function getAllVehiculesByCategory($id_category) {
+	function getAllVehiculesByCategory($id_category, $page) {
 		global $bdd;
 		try {
-                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_categorie = :id_category");
+                    if (empty($page)) {
+                        $page = 1;
+                    }
+                    $limit_min = $page - 1 * 10;
+                    $limit_max = $page * 10;
+                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_categorie = :id_category LIMIT :limit_min , :limit_max");
                     $sql->bindValue(':id_category', $id_category);
+                    $sql->bindValue(':limit_min', $limit_min);
+                    $sql->bindValue(':limit_max', $limit_max);
                     $result = $sql->execute();
                     if ($result) {
                             $rows = $sql->fetchAll();
