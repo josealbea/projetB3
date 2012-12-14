@@ -40,17 +40,24 @@ class Application_Model_Users {
 		}
 	}
 
-	function getAllUsers() {
+	function getAllUsers($page) {
 		global $bdd;
                 
 		try {
-			$sql = $bdd->prepare("SELECT * FROM membre");
-			$result = $sql->execute();
-			if ($result) {
-				$rows = $sql->fetchAll();
-                                return $rows;
-                                
-			}
+                    if (empty($page)) {
+                        $page = 1;
+                    }
+                    $limit_min = $page - 1 * 10;
+                    $limit_max = $page * 10;
+                    $sql = $bdd->prepare("SELECT * FROM membre LIMIT :limit_min , :limit_max");
+                    $sql->bindValue(':limit_min', $limit_min);
+                    $sql->bindValue(':limit_max', $limit_max);
+                    $result = $sql->execute();
+                    if ($result) {
+                            $rows = $sql->fetchAll();
+                            return $rows;
+
+                    }
 		}
 		catch (PDOEXCEPTION $e) {
 			die('Erreur : '.$e->getMessage());
