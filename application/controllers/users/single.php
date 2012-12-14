@@ -43,7 +43,7 @@ function do_get() {
           $dom->appendChild($membre);
           $membre->setAttribute("id", $row['id_membre']);
           $membre->setAttribute("pseudo", $row['pseudo']);
-          $membre->setAttribute("adresse_mail", $row['mail']);
+          $membre->setAttribute("mail", $row['mail']);
           $membre->setAttribute("nom", utf8_decode($row['nom']));
           $membre->setAttribute("prenom",  utf8_decode($row['prenom']));
           $membre->setAttribute("ville", utf8_encode($row['ville']));
