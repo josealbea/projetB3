@@ -119,13 +119,17 @@ function check_extension($ext) {
 }
 
 function addImage($image, $id_vehicule) {
-    var_dump($image);
+    var_dump($image);   
     $nom_image = $image['name'];
     $ext = strtolower(substr(strrchr($nom_image,'.'),1));
     if (!self::check_extension($ext)) {
-        return false;
+        $valid = false;
+        send_status($codeHttp)
     }
-    $valid = (!self::check_extension($ext)) ? false : true;
+    else {
+        $valid = true;
+    }
+    if ()
     $erreur = (!self::check_extension($ext)) ? 'Veuillez charger une image' : '';
     
     if($valid)
