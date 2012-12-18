@@ -119,19 +119,19 @@ function check_extension($ext) {
 }
 
 function addImage($image, $id_vehicule) {
-    var_dump($image);   
+    var_dump($image); 
+    $valid = false;
     $nom_image = $image['name'];
     $ext = strtolower(substr(strrchr($nom_image,'.'),1));
     if (!self::check_extension($ext)) {
         $valid = false;
-        send_status($codeHttp)
+        $erreur = 'Veuillez charger une image';
+        send_status(404);
     }
     else {
         $valid = true;
+        $erreur = '';
     }
-    if ()
-    $erreur = (!self::check_extension($ext)) ? 'Veuillez charger une image' : '';
-    
     if($valid)
     {
         $max_size = 2000000;
@@ -158,7 +158,7 @@ function addImage($image, $id_vehicule) {
         
         $filename = uniqid($nom_image);
         
-        $source = $fichier['tmp_name'];
+        $source = $image['tmp_name'];
         $target = $path_to_image . $filename. '.'. $ext;
         
         move_uploaded_file($source,$target);
@@ -169,12 +169,21 @@ function addImage($image, $id_vehicule) {
         
         $ox = imagesx($im);
         $oy = imagesy($im);
-        $nx = 304;
+        $nx = 300;
         $ny = floor($oy *($nx/$ox));
         $nm = imagecreatetruecolor($nx,$ny);
         imagecopyresized($nm, $im, 0,0,0,0, $nx,$ny,$ox,$oy);
         imagejpeg($nm, $path_to_min.$filename.'.'.$ext);
         
-        $nom_image = $filename.'.'.$ext;
+        $url_image = $filename.'.'.$ext;
+        
+        $uploadImage = new Application_Model_Vehicule;
+        $upload = $uploadImage->uploadPicture($url_image, $nom_image, $id_vehicule);
+        if ($upload) {
+            send_status(200);
+        }
+        else {
+            send_status(400);
         }
     }
+}

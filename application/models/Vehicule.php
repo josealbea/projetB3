@@ -211,5 +211,28 @@ class Application_Model_Vehicule {
 			die ('Erreur : '. $e->getMessage());
 		}
 	}
+        
+        function uploadImage($url_image, $nom_image, $id_vehicule) {
+            global $bdd;
+		try {
+                    if (!self::ifVehiculeExist($id_vehicule)) {
+                        send_status(404);
+                        return false;
+                    }
+                    else {
+                        $sql = $bdd->prepare("INSERT INTO photo (id_photo, titre, url, id_vehicule) VALUES (NULL, ':nom_photo', ':nom_image', ':id_vehicule')");
+                        $sql->bindValue(":id_vehicule", $id_vehicule);
+                        $sql->bindValue(":url_image", $url_image);
+                        $sql->bindValue(":nom_image", $nom_image);
+                        $result = $sql->execute();
+                        if ($result) {
+                            return true;
+                        }
+                    }
+		}
+		catch (PDOException $e) {
+			die ('Erreur : '. $e->getMessage());
+		}
+        }
 
 }
