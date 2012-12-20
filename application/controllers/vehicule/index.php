@@ -19,9 +19,15 @@ function init() {
 }
 
 function do_get() {
+		if (!isset($_GET['page'])) {
+			$_GET['page'] = 1;	
+		}
+		$limit_min = ($_GET['page'] - 1) * 10;
+        $limit_max = ($_GET['page'] * 10);
         global $liste_vehicule;
+
 	$Vehicule = new Application_Model_Vehicule();
-	$liste_vehicule = $Vehicule->getAllVehicules();
+	$liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max);
         $dom = new DOMDocument();
         $vehicules = $dom->createElement("vehicules");
         $dom->appendChild($vehicules);
