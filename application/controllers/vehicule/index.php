@@ -41,6 +41,9 @@ function do_get() {
           $vehicule->setAttribute("km", utf8_encode($row['km']));
           $vehicule->setAttribute("annee", utf8_encode($row['annee']));
           $vehicule->setAttribute("energie", utf8_encode($row['energie']));
+          $vehicule->setAttribute("date_ajout", $row['date_ajout']);
+          $vehicule->setAttribute("date_modification", $row['date_modification']);
+          $vehicule->setAttribute("date_suppression", $row['date_suppression']);
           $vehicule->setAttribute("boite_vitesse", utf8_encode($row['boite_vitesse']));
           if ($row['id_categorie'] ==  1) {
               $vehicule->setAttribute("type_vehicule", "voiture");
