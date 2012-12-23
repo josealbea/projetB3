@@ -1,23 +1,23 @@
 <?php 
 class Application_Model_Vehicule {
         
-        function ifVehiculeExist($id_vehicule) {
-            global $bdd;
-            try {
-                $count = $bdd->prepare("SELECT * FROM vehicule WHERE id_vehicule = :id_vehicule");
-                $count->bindValue(":id_vehicule", $id_vehicule);
-                $count->execute();
-                if ($count->fetchColumn() < 1) {
-                    return false;
-                }
-                else {
-                    return true;
-                }
+    function ifVehiculeExist($id_vehicule) {
+        global $bdd;
+        try {
+            $count = $bdd->prepare("SELECT * FROM vehicule WHERE id_vehicule = :id_vehicule");
+            $count->bindValue(":id_vehicule", $id_vehicule);
+            $count->execute();
+            if ($count->fetchColumn() < 1) {
+                return false;
             }
-            catch(PDOException $e) {
-                die("Erreur :". $e->getMessage());
+            else {
+                return true;
             }
         }
+        catch(PDOException $e) {
+            die("Erreur :". $e->getMessage());
+        }
+    }
 	
 	function getVehicule($id_vehicule) {
 		global $bdd;
@@ -39,6 +39,34 @@ class Application_Model_Vehicule {
 		    die('Erreur : '.$e->getMessage());
 		}
 	}
+
+    function getMemberByVehicule($id_vehicule) {
+        global $bdd;
+        try {
+                    if (!self::ifVehiculeExist($id_vehicule)) {
+                        send_status(404);
+                    }
+                    else {
+                        $sql = $bdd->prepare("SELECT id_membre FROM vehicule WHERE id_vehicule = :id_vehicule");
+                        $sql->bindValue(':id_vehicule', $id_vehicule);
+                        $result = $sql->execute();
+                        if ($result) {
+                            $row = $sql->fetch(PDO::FETCH_ASSOC);
+                            $member = $bdd->prepare("SELECT * FROM membre WHERE id_membre = :id_membre");
+                            $member->bindValue('id_membre', $row['id_membre']);
+                            $resultMember = $member->execute();
+                            if ($resultMember) {
+                                $user = $member->fetch(PDO::FETCH_ASSOC);
+                                return $user;
+                            }
+                                
+                        }
+                    }
+        }
+        catch (PDOException $e) {
+            die('Erreur : '.$e->getMessage());
+        }
+    }
 
 	function getAllVehicules($limit_min, $limit_max) {
 		global $bdd;

@@ -38,7 +38,7 @@ function do_get() {
           $user->setAttribute("adresse_mail", $row['mail']);
           $user->setAttribute("nom", utf8_decode($row['nom']));
           $user->setAttribute("prenom",  utf8_decode($row['prenom']));
-          $user->setAttribute("ville", utf8_encode($row['ville']));
+          $user->setAttribute("ville", utf8_decode($row['ville']));
           $user->setAttribute("code_postal", $row['code_postal']);
           $user->setAttribute("telephone", $row['telephone']);
           if ($row['type'] == 1) {
