@@ -1,6 +1,6 @@
 <?php 
 class Application_Model_Vehicule {
-	
+
     function ifVehiculeExist($id_vehicule) {
         global $bdd;
         try {
@@ -80,8 +80,6 @@ class Application_Model_Vehicule {
             $sql->bindValue(":limit_min", $limit_min,  PDO::PARAM_INT);
             $sql->bindValue(":limit_max", $limit_max,  PDO::PARAM_INT);
             $result = $sql->execute();
-            header('content-type: text/html');
-            var_dump($sql);exit;
             if ($result) {
                     $rows = $sql->fetchAll();
                     return $rows;
