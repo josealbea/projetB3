@@ -177,6 +177,64 @@ function do_post() {
           print $dom->saveXML();
 }
  
+// FONCTION POST
+function do_post() {
+	if (!is_admin()) {
+		exit_error(401, "mustBeAdmin");
+	}
+	$erreurs = array();
+ 
+	parse_str(file_get_contents("php://input"), $_POST);
+	if (empty($_POST["id_categorie"])) {
+		$erreurs[] = "categorieRequise";
+	}
+	if (empty($_POST["titre"])) {
+		$erreurs[] = "titreRequis";
+	}
+	if (empty($_POST["description"])) {
+		$erreurs[] = "descriptionRequise";
+	}
+	if (empty($_POST["prix"])) {
+		$erreurs[] = "prixRequis";
+	}
+	if (empty($_POST["annee"])) {
+		$erreurs[] = "anneeRequise";
+	}
+	if (empty($_POST["km"])) {
+		$erreurs[] = "kmRequis";
+	}
+	if (empty($_POST["energie"])) {
+		$erreurs[] = "energieRequise";
+	}
+	if (!empty($_POST['id_categorie'])) {
+		if ($_POST['id_categorie'] == 1) {
+			if (empty($_POST["boite_vitesse"])) {
+				$erreurs[] = "boiteVitesseRequise";
+			}
+			if (empty($_POST["nb_places"])) {
+				$erreurs[] = "nbPlacesRequise";
+			}
+			$_POST['cylindree'] = "";
+		}
+		if ($_POST['id_categorie'] == 2 || $_POST['id_categorie'] == 3 ) {
+			if (empty($_POST["cylindree"])) {
+				$erreurs[] = "cylindreeRequise";
+			}
+			$_POST['boite_vitesse'] = "";
+			$_POST['nb_places'] = "";
+		}
+	}
+	if (count($erreurs) > 0) {
+		exit_error(400, join(", ", $erreurs));
+	}
+	else {
+		extract($_POST);
+		$id_membre = $_SESSION['id_membre'];
+		$vehicule = new Application_Model_Vehicule;
+		$vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $id_membre, $_POST['id_categorie']);
+	}
+}
+ 
 function check_extension($ext) {
     $ext_aut = array('jpg','jpeg','png','gif');
     if(in_array($ext,$ext_aut))
