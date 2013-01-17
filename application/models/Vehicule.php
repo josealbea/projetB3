@@ -1,23 +1,23 @@
 <?php 
 class Application_Model_Vehicule {
         
-        function ifVehiculeExist($id_vehicule) {
-            global $bdd;
-            try {
-                $count = $bdd->prepare("SELECT * FROM vehicule WHERE id_vehicule = :id_vehicule");
-                $count->bindValue(":id_vehicule", $id_vehicule);
-                $count->execute();
-                if ($count->fetchColumn() < 1) {
-                    return false;
-                }
-                else {
-                    return true;
-                }
+    function ifVehiculeExist($id_vehicule) {
+        global $bdd;
+        try {
+            $count = $bdd->prepare("SELECT * FROM vehicule WHERE id_vehicule = :id_vehicule");
+            $count->bindValue(":id_vehicule", $id_vehicule);
+            $count->execute();
+            if ($count->fetchColumn() < 1) {
+                return false;
             }
-            catch(PDOException $e) {
-                die("Erreur :". $e->getMessage());
+            else {
+                return true;
             }
         }
+        catch(PDOException $e) {
+            die("Erreur :". $e->getMessage());
+        }
+    }
 	
 	function getVehicule($id_vehicule) {
 		global $bdd;
@@ -92,6 +92,7 @@ class Application_Model_Vehicule {
 			die('Erreur : '.$e->getMessage());
 		}
 	}
+
 	function addVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_membre, $id_categorie) {
 		global $bdd;
 		try {
@@ -141,7 +142,7 @@ class Application_Model_Vehicule {
 		catch (PDOException $e) {
 		    die('Erreur : '.$e->getMessage());
 		}
-		}
+	}
  
 	function setVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_vehicule) {
 		global $bdd;
@@ -197,7 +198,6 @@ class Application_Model_Vehicule {
 		}
 	}
  
-}
     function ifVehiculeExist($id_vehicule) {
         global $bdd;
         try {
@@ -324,6 +324,7 @@ class Application_Model_Vehicule {
 			die('Erreur : '.$e->getMessage());
 		}
 	}
+
 	function addVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_membre, $id_categorie) {
 		global $bdd;
 		try {
@@ -373,7 +374,7 @@ class Application_Model_Vehicule {
 		catch (PDOException $e) {
 		    die('Erreur : '.$e->getMessage());
 		}
-		}
+	}
  
 	function setVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_vehicule) {
 		global $bdd;
@@ -429,8 +430,8 @@ class Application_Model_Vehicule {
 		}
 	}
         
-        function uploadImage($url_image, $nom_image, $id_vehicule) {
-            global $bdd;
+    function uploadImage($url_image, $nom_image, $id_vehicule) {
+        global $bdd;
 		try {
                     if (!self::ifVehiculeExist($id_vehicule)) {
                         send_status(404);
@@ -450,6 +451,6 @@ class Application_Model_Vehicule {
 		catch (PDOException $e) {
 			die ('Erreur : '. $e->getMessage());
 		}
-        }
+    }
  
 }
