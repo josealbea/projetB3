@@ -114,7 +114,7 @@ function do_post() {
 		$vehicule = new Application_Model_Vehicule;
 		$vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $id_membre, $_POST['id_categorie']);
 	}
-  $type_vehicule = 1;
+  $type_vehicule = 2;
 	$Vehicule = new Application_Model_Vehicule();
 	$liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max, $type_vehicule);
         $dom = new DOMDocument();
