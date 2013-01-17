@@ -68,13 +68,20 @@ class Application_Model_Vehicule {
         }
     }
 
-	function getAllVehicules($limit_min, $limit_max) {
+	function getAllVehicules($limit_min, $limit_max, $type_vehicule) {
 		global $bdd;
+         $wheres = array();
+        if ($type_vehicule != NULL) {
+            $wheres[] = "id_categorie=$type_vehicule";
+        }
+        $where = (count($wheres) == 0) ? "" : " WHERE " . join(" AND ", $wheres);
 		try {
-            $sql = $bdd->prepare("SELECT * FROM vehicule LIMIT :limit_min, :limit_max");
+            $sql = $bdd->prepare("SELECT * FROM vehicule $where LIMIT :limit_min, :limit_max");
             $sql->bindValue(":limit_min", $limit_min,  PDO::PARAM_INT);
             $sql->bindValue(":limit_max", $limit_max,  PDO::PARAM_INT);
             $result = $sql->execute();
+            header('content-type: text/html');
+            var_dump($sql);exit;
             if ($result) {
                     $rows = $sql->fetchAll();
                     return $rows;

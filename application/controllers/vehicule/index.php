@@ -25,9 +25,9 @@ function do_get() {
 		$limit_min = ($_GET['page'] - 1) * 10;
         $limit_max = ($_GET['page'] * 10);
         global $liste_vehicule;
-
+  $type_vehicule = 2;
 	$Vehicule = new Application_Model_Vehicule();
-	$liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max);
+	$liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max, $type_vehicule);
         $dom = new DOMDocument();
         $vehicules = $dom->createElement("vehicules");
         $dom->appendChild($vehicules);
