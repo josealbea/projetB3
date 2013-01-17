@@ -1,117 +1,258 @@
 <?php 
-init();
-switch ($_SERVER['REQUEST_METHOD']) {
-	case "GET": 
-	do_get();
-	break;
-	case "POST":
-	do_post();
-	break;
-	default:
-	send_status(405);
-	die();
-}
-?>
-<?php
-
-function init() {
-	require APPLICATION_PATH."models/Vehicule.php";
-}
-
-function do_get() {
-		if (!isset($_GET['page'])) {
-			$_GET['page'] = 1;	
+class Application_Model_Vehicule {
+	
+    function ifVehiculeExist($id_vehicule) {
+        global $bdd;
+        try {
+            $count = $bdd->prepare("SELECT * FROM vehicule WHERE id_vehicule = :id_vehicule");
+            $count->bindValue(":id_vehicule", $id_vehicule);
+            $count->execute();
+            if ($count->fetchColumn() < 1) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        catch(PDOException $e) {
+            die("Erreur :". $e->getMessage());
+        }
+    }
+	
+	function getVehicule($id_vehicule) {
+		global $bdd;
+		try {
+                    if (!self::ifVehiculeExist($id_vehicule)) {
+                        send_status(404);
+                    }
+                    else {
+                        $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_vehicule = :id_vehicule");
+                        $sql->bindValue(':id_vehicule', $id_vehicule);
+                        $result = $sql->execute();
+                        if ($result) {
+                                $row = $sql->fetch(PDO::FETCH_ASSOC);
+                                return $row;
+                        }
+                    }
 		}
-		$limit_min = ($_GET['page'] - 1) * 10;
-        $limit_max = ($_GET['page'] * 10);
-        global $liste_vehicule;
-
-	$Vehicule = new Application_Model_Vehicule();
-	$liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max);
-        $dom = new DOMDocument();
-        $vehicules = $dom->createElement("vehicules");
-        $dom->appendChild($vehicules);
-        foreach($liste_vehicule as $row){
-          $vehicule = $dom->createElement("vehicule");
-          $vehicules->appendChild($vehicule);
-          $vehicule->setAttribute("id", $row['id_vehicule']);
-          $vehicule->setAttribute("titre", utf8_encode($row['titre']));
-          $vehicule->setAttribute("description", utf8_encode($row['description']));
-          $vehicule->setAttribute("prix", utf8_encode($row['prix']));
-          $vehicule->setAttribute("km", utf8_encode($row['km']));
-          $vehicule->setAttribute("annee", utf8_encode($row['annee']));
-          $vehicule->setAttribute("energie", utf8_encode($row['energie']));
-          $vehicule->setAttribute("boite_vitesse", utf8_encode($row['boite_vitesse']));
-          if ($row['id_categorie'] ==  1) {
-              $vehicule->setAttribute("type_vehicule", "voiture");
-              $vehicule->setAttribute("nb_places", utf8_encode($row['nb_places']));
-          }
-          elseif ($row['id_categorie'] ==  2) {
-              $vehicule->setAttribute("type_vehicule", "moto");
-              $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
-          }
-          elseif ($row['id_categorie'] ==  3) {
-              $vehicule->setAttribute("type_vehicule", "scooter");
-              $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
-          }
-          }
-          print $dom->saveXML();
-}
-
-// FONCTION POST
-function do_post() {
-	if (!is_admin()) {
-		exit_error(401, "mustBeAdmin");
-	}
-	$erreurs = array();
-
-	parse_str(file_get_contents("php://input"), $_POST);
-	if (empty($_POST["id_categorie"])) {
-		$erreurs[] = "categorieRequise";
-	}
-	if (empty($_POST["titre"])) {
-		$erreurs[] = "titreRequis";
-	}
-	if (empty($_POST["description"])) {
-		$erreurs[] = "descriptionRequise";
-	}
-	if (empty($_POST["prix"])) {
-		$erreurs[] = "prixRequis";
-	}
-	if (empty($_POST["annee"])) {
-		$erreurs[] = "anneeRequise";
-	}
-	if (empty($_POST["km"])) {
-		$erreurs[] = "kmRequis";
-	}
-	if (empty($_POST["energie"])) {
-		$erreurs[] = "energieRequise";
-	}
-	if (!empty($_POST['id_categorie'])) {
-		if ($_POST['id_categorie'] == 1) {
-			if (empty($_POST["boite_vitesse"])) {
-				$erreurs[] = "boiteVitesseRequise";
-			}
-			if (empty($_POST["nb_places"])) {
-				$erreurs[] = "nbPlacesRequise";
-			}
-			$_POST['cylindree'] = "";
-		}
-		if ($_POST['id_categorie'] == 2 || $_POST['id_categorie'] == 3 ) {
-			if (empty($_POST["cylindree"])) {
-				$erreurs[] = "cylindreeRequise";
-			}
-			$_POST['boite_vitesse'] = "";
-			$_POST['nb_places'] = "";
+		catch (PDOException $e) {
+		    die('Erreur : '.$e->getMessage());
 		}
 	}
-	if (count($erreurs) > 0) {
-		exit_error(400, join(", ", $erreurs));
+ 
+    function getMemberByVehicule($id_vehicule) {
+        global $bdd;
+        try {
+                    if (!self::ifVehiculeExist($id_vehicule)) {
+                        send_status(404);
+                    }
+                    else {
+                        $sql = $bdd->prepare("SELECT id_membre FROM vehicule WHERE id_vehicule = :id_vehicule");
+                        $sql->bindValue(':id_vehicule', $id_vehicule);
+                        $result = $sql->execute();
+                        if ($result) {
+                            $row = $sql->fetch(PDO::FETCH_ASSOC);
+                            $member = $bdd->prepare("SELECT * FROM membre WHERE id_membre = :id_membre");
+                            $member->bindValue('id_membre', $row['id_membre']);
+                            $resultMember = $member->execute();
+                            if ($resultMember) {
+                                $user = $member->fetch(PDO::FETCH_ASSOC);
+                                return $user;
+                            }
+                                
+                        }
+                    }
+        }
+        catch (PDOException $e) {
+            die('Erreur : '.$e->getMessage());
+        }
+    }
+ 
+	function getAllVehicules($limit_min, $limit_max, $type_vehicule) {
+		global $bdd;
+         $wheres = array();
+        if ($type_vehicule != NULL) {
+            $wheres[] = "id_categorie=$type_vehicule";
+        }
+        $where = (count($wheres) == 0) ? "" : " WHERE " . join(" AND ", $wheres);
+		try {
+            $sql = $bdd->prepare("SELECT * FROM vehicule $where LIMIT :limit_min, :limit_max");
+            $sql->bindValue(":limit_min", $limit_min,  PDO::PARAM_INT);
+            $sql->bindValue(":limit_max", $limit_max,  PDO::PARAM_INT);
+            $result = $sql->execute();
+            header('content-type: text/html');
+            var_dump($sql);exit;
+            if ($result) {
+                    $rows = $sql->fetchAll();
+                    return $rows;
+            }
+		}
+		catch (PDOException $e) {
+		    die('Erreur : '.$e->getMessage());
+		}
 	}
-	else {
-		extract($_POST);
-		$id_membre = $_SESSION['id_membre'];
-		$vehicule = new Application_Model_Vehicule;
-		$vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $id_membre, $_POST['id_categorie']);
+ 
+	function getAllVehiculesByMember($limit_min, $limit_max) {
+		global $bdd;
+		try {
+                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_membre = :id_member LIMIT :limit_min , :limit_max");
+                    $sql->bindValue(':id_member', $id_member);
+                    $sql->bindValue(':limit_min', $limit_min);
+                    $sql->bindValue(':limit_max', $limit_max);
+                    $result = $sql->execute();
+                    if ($result) {
+                            $rows = $sql->fetchAll();
+                            return $rows;
+                    }
+		}
+		catch (PDOException $e) {
+		    die('Erreur : '.$e->getMessage());
+		}
 	}
+ 
+	function getAllVehiculesByCategory($id_category, $limit_min, $limit_max) {
+		global $bdd;
+		try {
+                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_categorie = :id_category LIMIT :limit_min , :limit_max");
+                    $sql->bindValue(':id_category', $id_category);
+                    $sql->bindValue(':limit_min', $limit_min);
+                    $sql->bindValue(':limit_max', $limit_max);
+                    $result = $sql->execute();
+                    if ($result) {
+                            $rows = $sql->fetchAll();
+                            return $rows;
+                    }
+		}
+		catch(PDOException $e) {
+			die('Erreur : '.$e->getMessage());
+		}
+	}
+	function addVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_membre, $id_categorie) {
+		global $bdd;
+		try {
+                    $sql = $bdd->prepare("INSERT INTO vehicule (id_vehicule, titre, description, prix, annee, km, energie, date_ajout, date_modification, date_suppression, statut, boite_vitesse, nb_places, cylindree, id_membre, id_categorie) 
+                    VALUES (NULL, :titre, :description, :prix, :annee, :km, :energie, curdate(), '0000-00-00', '0000-00-00', '0', :boite_vitesse, :nb_places, :cylindree, :id_membre, :id_categorie)");
+                    $sql->bindValue(":titre", ucwords(trim($titre)));
+                    $sql->bindValue(":description", trim($description));
+                    $sql->bindValue(":prix", $prix);
+                    $sql->bindValue(":annee", $annee);
+                    $sql->bindValue(":km", $km);
+                    $sql->bindValue(":energie", ucwords(trim($energie)));
+                    $sql->bindValue(":boite_vitesse", ucwords(trim($boite_vitesse)));
+                    $sql->bindValue(":nb_places", $nb_places);
+                    $sql->bindValue(":cylindree", $cylindree);
+                    $sql->bindValue(":id_membre", $id_membre);
+                    $sql->bindValue(":id_categorie", $id_categorie);
+                    $result = $sql->execute();
+                    if ($result) {
+                        return true;
+                    }
+		}
+		catch (PDOException $e) {
+			die ('Erreur : '.$e->getMessage());
+		}
+	}
+ 
+	function searchVehicule($type, $recherche, $annee, $km, $prix_min, $prix_max, $energie, $boite_vitesse, $nb_places) {
+		global $bdd;
+		try {
+                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE titre LIKE '%:recherche%' AND annee >= ':annee' AND km <= ':km' AND energie = ':energie' AND boite_vitesse = ':boite_vitesse' AND nb_places = ':nb_places' AND id_categorie = ':type' AND prix BETWEEN ':prix_min' AND ':prix_max' ");
+                    $sql->bindValue(":recherche", $recherche);
+                    $sql->bindValue(":prix_min", $prix_min);
+                    $sql->bindValue(":prix_max", $prix_max);
+                    $sql->bindValue(":annee", $annee);
+                    $sql->bindValue(":km", $km);
+                    $sql->bindValue(":energie", $energie);
+                    $sql->bindValue(":boite_vitesse", $boite_vitesse);
+                    $sql->bindValue(":nb_places", $nb_places);
+                    //$sql->bindValue(":cylindree", $cylindree);
+                    $sql->bindValue(":id_categorie", $type);
+                    $result = $sql->execute();
+                    if ($result) {
+                            $rows = $sql->fetchAll();
+                            return $rows;
+                    }
+		}
+		catch (PDOException $e) {
+		    die('Erreur : '.$e->getMessage());
+		}
+		}
+ 
+	function setVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_vehicule) {
+		global $bdd;
+		try {
+                    if (!self::ifVehiculeExist($id_vehicule)) {
+                        send_status(404);
+                    }
+                    else {
+                        $date = date("Y-m-d");
+                        $sql = $bdd->prepare("UPDATE vehicule SET titre = :titre, description = :description, prix = :prix, annee = :annee, km = :km, energie = :energie, date_modification = :date_modification, boite_vitesse = :boite_vitesse, nb_places = :nb_places, cylindree = :cylindree WHERE id_vehicule = :id_vehicule");
+                        $sql->bindValue(":titre", $titre);
+                        $sql->bindValue(":description", $description);
+                        $sql->bindValue(":prix", $prix);
+                        $sql->bindValue(":annee", $annee);
+                        $sql->bindValue(":km", $km);
+                        $sql->bindValue(":energie", $energie);
+                        $sql->bindValue(":date_modification", $date);
+                        $sql->bindValue(":boite_vitesse", $boite_vitesse);
+                        $sql->bindValue(":nb_places", $nb_places);
+                        $sql->bindValue(":cylindree", $cylindree);
+                        $sql->bindValue(":id_vehicule", $id_vehicule);
+                        $result = $sql->execute();
+                        if ($result) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                }
+		catch (PDOException $e) {
+		    die('Erreur : '.$e->getMessage());
+		}
+	}
+ 
+	function deleteVehicule($id_vehicule) {
+		global $bdd;
+		try {
+                    if (!self::ifVehiculeExist($id_vehicule)) {
+                        send_status(404);
+                    }
+                    else {
+                        $sql = $bdd->prepare("DELETE FROM vehicule WHERE id_vehicule = :id_vehicule");
+                        $sql->bindValue(":id_vehicule", $id_vehicule);
+                        $result = $sql->execute();
+                        if ($result) {
+                            return true;
+                        }
+                    }
+		}
+		catch (PDOException $e) {
+			die ('Erreur : '. $e->getMessage());
+		}
+	}
+        
+        function uploadImage($url_image, $nom_image, $id_vehicule) {
+            global $bdd;
+		try {
+                    if (!self::ifVehiculeExist($id_vehicule)) {
+                        send_status(404);
+                        return false;
+                    }
+                    else {
+                        $sql = $bdd->prepare("INSERT INTO photo (id_photo, titre, url, id_vehicule) VALUES (NULL, ':nom_photo', ':nom_image', ':id_vehicule')");
+                        $sql->bindValue(":id_vehicule", $id_vehicule);
+                        $sql->bindValue(":url_image", $url_image);
+                        $sql->bindValue(":nom_image", $nom_image);
+                        $result = $sql->execute();
+                        if ($result) {
+                            return true;
+                        }
+                    }
+		}
+		catch (PDOException $e) {
+			die ('Erreur : '. $e->getMessage());
+		}
+        }
+ 
 }
