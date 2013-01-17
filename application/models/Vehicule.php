@@ -40,36 +40,26 @@ class Application_Model_Vehicule {
 		}
 	}
 
-	function getAllVehicules($page) {
+	function getAllVehicules($limit_min, $limit_max) {
 		global $bdd;
 		try {
-                    if (empty($page)) {
-                        $page = 1;
-                    }
-                    $limit_min = $page - 1 * 10;
-                    $limit_max = $page * 10;
-                    $sql = $bdd->prepare("SELECT * FROM vehicule LIMIT :limit_min , :limit_max");
-                    $sql->bindValue(':limit_min', $limit_min);
-                    $sql->bindValue(':limit_max', $limit_max);
-                    $result = $sql->execute();
-                    if ($result) {
-                            $rows = $sql->fetchAll();
-                            return $rows;
-                    }
+            $sql = $bdd->prepare("SELECT * FROM vehicule LIMIT :limit_min, :limit_max");
+            $sql->bindValue(":limit_min", $limit_min,  PDO::PARAM_INT);
+            $sql->bindValue(":limit_max", $limit_max,  PDO::PARAM_INT);
+            $result = $sql->execute();
+            if ($result) {
+                    $rows = $sql->fetchAll();
+                    return $rows;
+            }
 		}
 		catch (PDOException $e) {
 		    die('Erreur : '.$e->getMessage());
 		}
 	}
 
-	function getAllVehiculesByMember($id_member, $page) {
+	function getAllVehiculesByMember($limit_min, $limit_max) {
 		global $bdd;
 		try {
-                    if (empty($page)) {
-                        $page = 1;
-                    }
-                    $limit_min = $page - 1 * 10;
-                    $limit_max = $page * 10;
                     $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_membre = :id_member LIMIT :limit_min , :limit_max");
                     $sql->bindValue(':id_member', $id_member);
                     $sql->bindValue(':limit_min', $limit_min);
@@ -85,14 +75,9 @@ class Application_Model_Vehicule {
 		}
 	}
 
-	function getAllVehiculesByCategory($id_category, $page) {
+	function getAllVehiculesByCategory($id_category, $limit_min, $limit_max) {
 		global $bdd;
 		try {
-                    if (empty($page)) {
-                        $page = 1;
-                    }
-                    $limit_min = $page - 1 * 10;
-                    $limit_max = $page * 10;
                     $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_categorie = :id_category LIMIT :limit_min , :limit_max");
                     $sql->bindValue(':id_category', $id_category);
                     $sql->bindValue(':limit_min', $limit_min);

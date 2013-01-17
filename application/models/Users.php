@@ -40,18 +40,12 @@ class Application_Model_Users {
 		}
 	}
 
-	function getAllUsers($page) {
-		global $bdd;
-                
+	function getAllUsers($limit_min, $limit_max) {
+		global $bdd;          
 		try {
-                    if (empty($page)) {
-                        $page = 1;
-                    }
-                    $limit_min = $page - 1 * 10;
-                    $limit_max = $page * 10;
-                    $sql = $bdd->prepare("SELECT * FROM membre LIMIT :limit_min , :limit_max");
-                    $sql->bindValue(':limit_min', $limit_min);
-                    $sql->bindValue(':limit_max', $limit_max);
+                    $sql = $bdd->prepare("SELECT * FROM membre LIMIT $limit_min , $limit_max");
+                    $sql->bindValue(":limit_min", $limit_min,  PDO::PARAM_INT);
+                    $sql->bindValue(":limit_max", $limit_max,  PDO::PARAM_INT);
                     $result = $sql->execute();
                     if ($result) {
                             $rows = $sql->fetchAll();

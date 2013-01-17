@@ -19,9 +19,14 @@ function init() {
 }
 
 function do_get() {
+	if (!isset($_GET['page'])) {
+		$_GET['page'] = 1;	
+	}
+	$limit_min = ($_GET['page'] - 1) * 10;
+    $limit_max = ($_GET['page'] * 10);
 	global $liste_users;
 	$Users = new Application_Model_Users();
-	$liste_users = $Users->getAllUsers();
+	$liste_users = $Users->getAllUsers($limit_min, $limit_max);
         $dom = new DOMDocument();
         $users = $dom->createElement("utilisateurs");
         $dom->appendChild($users);
