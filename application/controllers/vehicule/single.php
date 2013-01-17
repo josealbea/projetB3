@@ -49,18 +49,47 @@ function do_get() {
       $vehicule->setAttribute("annee", utf8_encode($row['annee']));
       $vehicule->setAttribute("energie", utf8_encode($row['energie']));
       $vehicule->setAttribute("boite_vitesse", utf8_encode($row['boite_vitesse']));
+      $vehicule->setAttribute("date_ajout", $row['date_ajout']);
+      $vehicule->setAttribute("date_modification", $row['date_modification']);
+      $vehicule->setAttribute("date_suppression", $row['date_suppression']);
       if ($row['id_categorie'] ==  1) {
-          $vehicule->setAttribute("type_vehicule", "voiture");
           $vehicule->setAttribute("nb_places", utf8_encode($row['nb_places']));
+          $vehicule->setAttribute("type_vehicule", "voiture");
       }
       elseif ($row['id_categorie'] ==  2) {
-          $vehicule->setAttribute("type_vehicule", "moto");
           $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
+          $vehicule->setAttribute("type_vehicule", "moto");
       }
       elseif ($row['id_categorie'] ==  3) {
-          $vehicule->setAttribute("type_vehicule", "scooter");
           $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
+          $vehicule->setAttribute("type_vehicule", "scooter");
       }
+                $user = $dom->createElement("membre");
+          $vehicule->appendChild($user);
+          $rowUser = $mVehicule->getMemberByVehicule($row['id_vehicule']);
+          $user->setAttribute("id", $rowUser['id_membre']);
+          $user->setAttribute("pseudo", $rowUser['pseudo']);
+          $user->setAttribute("adresse_mail", $rowUser['mail']);
+          $user->setAttribute("nom", utf8_encode($rowUser['nom']));
+          $user->setAttribute("prenom",  utf8_encode($rowUser['prenom']));
+          $user->setAttribute("ville", utf8_encode($rowUser['ville']));
+          $user->setAttribute("code_postal", $rowUser['code_postal']);
+          $user->setAttribute("telephone", $rowUser['telephone']);
+          if ($rowUser['type'] == 1) {
+              $user->setAttribute("type_compte", "administrateur");
+          }
+          else if ($rowUser['type'] == 2) {
+              $user->setAttribute("type_compte", "Membre basique");
+          }
+          if ($rowUser['statut'] == 0) {
+              $user->setAttribute("statut_compte", "Compte banni");
+          }
+          else if ($rowUser['statut'] == 1) {
+              $user->setAttribute("statut_compte", "Compte validé");
+          }
+          else if ($rowUser['statut'] == 2) {
+              $user->setAttribute("statut_compte", "En attente de validation");
+          }
       print $dom->saveXML();
     }
 
@@ -146,4 +175,3 @@ function do_delete() {
   }
   
 }
-	?>
