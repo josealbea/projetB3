@@ -61,9 +61,6 @@ function do_get() {
 
 // FONCTION POST
 function do_post() {
-	if (!is_admin()) {
-		exit_error(401, "mustBeAdmin");
-	}
 	$erreurs = array();
 
 	parse_str(file_get_contents("php://input"), $_POST);
