@@ -76,9 +76,6 @@ function do_post() {
 	if (empty($_POST["nom"])) {
 		$erreurs[] = "nomRequis";
 	}
-	if (empty($_POST["prenom"])) {
-		$erreurs[] = "prenomRequis";
-	}
 	if (empty($_POST["ville"])) {
 		$erreurs[] = "villeRequise";
 	}
