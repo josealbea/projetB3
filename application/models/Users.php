@@ -58,7 +58,7 @@ class Application_Model_Users {
 		}
 	}
 
-	function addUser($pseudo, $password, $mail, $nom, $prenom, $ville, $code_postal, $telephone) {
+	function addUser($pseudo, $password, $mail, $nom, $ville, $code_postal, $telephone) {
             global $bdd;
 		try {
                         $ifuserexist = $bdd->prepare("SELECT * FROM membre WHERE pseudo = :pseudo OR mail = :mail");
@@ -69,12 +69,11 @@ class Application_Model_Users {
                             return false;
                         }
                         $hash = uniqid(sha1($pseudo));
-			$sql = $bdd->prepare("INSERT INTO membre (id_membre, pseudo, password, mail, nom, prenom, ville, code_postal, telephone, type, statut, hash) VALUES (NULL, :pseudo, :password, :mail, :nom, :prenom, :ville, :code_postal, :telephone, '2', '2', :hash)");
+			$sql = $bdd->prepare("INSERT INTO membre (id_membre, pseudo, password, mail, nom, ville, code_postal, telephone, type, statut, hash) VALUES (NULL, :pseudo, :password, :mail, :nom, :ville, :code_postal, :telephone, '2', '2', :hash)");
 			$sql->bindValue(":pseudo", $pseudo);
                         $sql->bindValue(":password", $password);
                         $sql->bindValue(":mail", $mail);
                         $sql->bindValue(":nom", $nom);
-                        $sql->bindValue(":prenom", $prenom);
                         $sql->bindValue(":ville", $ville);
                         $sql->bindValue(":code_postal", $code_postal);
                         $sql->bindValue(":telephone", $telephone);
@@ -91,7 +90,7 @@ class Application_Model_Users {
 	}
 
 
-    function setUser($pseudo, $password, $mail, $nom, $prenom, $ville, $code_postal, $telephone, $id_membre) {
+    function setUser($pseudo, $password, $mail, $nom, $ville, $code_postal, $telephone, $id_membre) {
         global $bdd;
         
         try {
@@ -99,12 +98,11 @@ class Application_Model_Users {
                 send_status(404);
             }
             else {
-                $sql = $bdd->prepare("UPDATE membre SET pseudo = :pseudo, password = :password, mail = :mail, nom = :nom, prenom = :prenom, ville = :ville, code_postal = :code_postal, telephone = :telephone WHERE id_membre = :id_membre");
+                $sql = $bdd->prepare("UPDATE membre SET pseudo = :pseudo, password = :password, mail = :mail, nom = :nom, ville = :ville, code_postal = :code_postal, telephone = :telephone WHERE id_membre = :id_membre");
                 $sql->bindValue(":pseudo", $pseudo);
                 $sql->bindValue(":password", $password);
                 $sql->bindValue(":mail", $mail);
                 $sql->bindValue(":nom", $nom);
-                $sql->bindValue(":prenom", $prenom);
                 $sql->bindValue(":ville", $ville);
                 $sql->bindValue(":code_postal", $code_postal);
                 $sql->bindValue(":telephone", $telephone);
@@ -159,7 +157,7 @@ class Application_Model_Users {
                   <title>Validation de votre inscription</title>
                  </head>
                  <body>
-                  <p>Bonjour '.$rowUser['prenom'].' '.$rowUser['nom'].' </p>
+                  <p>Bonjour '.$rowUser['nom'].' </p>
                   <p>Pour valider votre compte, vous devez cliquez sur le lien suivant : <br />
                     <a href="'.SITE_ROOT.'users/validation/'.$rowUser['hash'].'">'.SITE_ROOT.'users/validation/'.$rowUser['hash'].'</a><br />
                     Copiez-coller le lien si vous ne parvenez pas a l\'ouvrir
