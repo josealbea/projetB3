@@ -80,10 +80,16 @@ class Application_Model_Vehicule {
             $sql->bindValue(":limit_min", $limit_min,  PDO::PARAM_INT);
             $sql->bindValue(":limit_max", $limit_max,  PDO::PARAM_INT);
             $result = $sql->execute();
-            if ($result) {
-                    $rows = $sql->fetchAll();
-                    return $rows;
+            if($sql->fetchColumn() > 0) {
+                if ($result) {
+                        $rows = $sql->fetchAll();
+                        return $rows;
+                }
             }
+            else {
+                send_status(404);
+            }
+
 		}
 		catch (PDOException $e) {
 		    die('Erreur : '.$e->getMessage());

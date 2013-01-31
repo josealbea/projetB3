@@ -68,10 +68,8 @@ function do_get() {
           $vehicule->appendChild($user);
           $rowUser = $mVehicule->getMemberByVehicule($row['id_vehicule']);
           $user->setAttribute("id", $rowUser['id_membre']);
-          $user->setAttribute("pseudo", $rowUser['pseudo']);
           $user->setAttribute("adresse_mail", $rowUser['mail']);
           $user->setAttribute("nom", utf8_encode($rowUser['nom']));
-          $user->setAttribute("prenom",  utf8_encode($rowUser['prenom']));
           $user->setAttribute("ville", utf8_encode($rowUser['ville']));
           $user->setAttribute("code_postal", $rowUser['code_postal']);
           $user->setAttribute("telephone", $rowUser['telephone']);
@@ -90,6 +88,7 @@ function do_get() {
           else if ($rowUser['statut'] == 2) {
               $user->setAttribute("statut_compte", "En attente de validation");
           }
+          header("Content-type: text/xml;charset=UTF-8");
       print $dom->saveXML();
     }
 

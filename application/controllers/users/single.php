@@ -42,13 +42,12 @@ function do_get() {
           $membre = $dom->createElement("membre");
           $dom->appendChild($membre);
           $membre->setAttribute("id", $row['id_membre']);
-          $membre->setAttribute("pseudo", $row['pseudo']);
           $membre->setAttribute("mail", $row['mail']);
           $membre->setAttribute("nom", utf8_decode($row['nom']));
-          $membre->setAttribute("prenom",  utf8_decode($row['prenom']));
           $membre->setAttribute("ville", utf8_encode($row['ville']));
           $membre->setAttribute("code_postal", $row['code_postal']);
           $membre->setAttribute("telephone", $row['telephone']);
+          header("Content-type: text/xml;charset=UTF-8");
           print $dom->saveXML();
   
 }
@@ -60,9 +59,6 @@ function do_put() {
   $erreurs = array();
   // Les parametres passés en put
   parse_str(file_get_contents("php://input"), $_PUT);
-    if (empty($_PUT["pseudo"])) {
-            $erreurs[] = "pseudoRequis";
-    }
     if (empty($_PUT["password"])) {
             $erreurs[] = "motDePasseRequis";
     }
@@ -71,9 +67,6 @@ function do_put() {
     }
     if (empty($_PUT["nom"])) {
             $erreurs[] = "nomRequis";
-    }
-    if (empty($_PUT["prenom"])) {
-            $erreurs[] = "prenomRequis";
     }
     if (empty($_PUT["ville"])) {
             $erreurs[] = "villeRequise";
@@ -92,7 +85,7 @@ function do_put() {
     global $editUser;
     $membre = new Application_Model_Users();
     $id = $_GET["id"];
-    $editUser = $membre->setUser($_PUT["pseudo"], $_PUT["password"], $_PUT["mail"], $_PUT["nom"], $_PUT["prenom"], $_PUT["ville"], $_PUT["code_postal"], $_PUT["telephone"], $id);
+    $editUser = $membre->setUser($_PUT["password"], $_PUT["mail"], $_PUT["nom"], $_PUT["ville"], $_PUT["code_postal"], $_PUT["telephone"], $id);
     if ($editUser) {
         send_status(200);
     }

@@ -34,7 +34,6 @@ function do_get() {
           $user = $dom->createElement("utilisateur");
           $users->appendChild($user);
           $user->setAttribute("id", $row['id_membre']);
-          $user->setAttribute("pseudo", $row['pseudo']);
           $user->setAttribute("adresse_mail", $row['mail']);
           $user->setAttribute("nom", utf8_decode($row['nom']));
           $user->setAttribute("ville", utf8_decode($row['ville']));
@@ -56,6 +55,7 @@ function do_get() {
               $user->setAttribute("statut_compte", "En attente de validation");
           }
         }
+        header("Content-type: text/xml;charset=UTF-8");
         print $dom->saveXML();
 }
 
@@ -64,9 +64,6 @@ function do_post() {
 	$erreurs = array();
 
 	parse_str(file_get_contents("php://input"), $_POST);
-	if (empty($_POST["pseudo"])) {
-		$erreurs[] = "pseudoRequis";
-	}
 	if (empty($_POST["password"])) {
 		$erreurs[] = "motDePasseRequis";
 	}
@@ -91,7 +88,8 @@ function do_post() {
 	}
 	else {
 		extract($_POST);
+		$password = sha1($password);
 		$membre = new Application_Model_Users();
-		$addUser = $membre->addUser($pseudo, $password, $mail, $nom, $ville, $code_postal, $telephone);
+		$addUser = $membre->addUser($password, $mail, $nom, $ville, $code_postal, $telephone);
 	}
 }
