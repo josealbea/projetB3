@@ -29,7 +29,7 @@ function do_post() {
   else {
     extract($_POST);
     $membre = new Application_Model_Users();
-    $check_membre = $membre->checkUser($mail, $password);
+    $check_membre = $membre->checkUser($_POST['mail_connect'], $_POST['password_connect']);
 }
 
 

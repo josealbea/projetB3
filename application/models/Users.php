@@ -225,27 +225,29 @@ class Application_Model_Users {
         global $bdd;
         try {
             $password = sha1($password);
-            $sql = $bdd->prepare("SELECT COUNT(*) as total FROM membre WHERE mail = :mail AND password = :password");
+            $sql = $bdd->prepare("SELECT * FROM membre WHERE mail = :mail AND password = :password");
             $sql->bindValue(":mail", $mail);
             $sql->bindValue(":password", $password);
             $result = $sql->execute();
             $membre = array();
             if ($result) {
                 $row = $sql->fetch();
-                if($row["total"] > 0) {
+                if($sql->rowCount() > 0) {
                     if ($row['statut'] == 2) {
                         $membre[] = "2";
                         echo "0";
-                        exit_error(204, "Membre en attente de validation");
+                        exit_error(204, " Membre en attente de validation");
                     }
                     else if ($row['statut'] == 3) {
                         $membre[] = "3";
                         echo "0";
-                        exit_error(204, "Membre banni");
+                        exit_error(204, " Membre banni");
                     }
                     else {
                         echo "1";
+                        $_SESSION['type'] = "membre";
                         $membre[] = "1";
+                        $membre[] = $row['id_membre'];
                         if ($row['type'] != 2) {
                             $membre[] = "admin";
                         }
