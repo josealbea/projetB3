@@ -37,5 +37,20 @@ function do_get() {
 }
 
 function do_post() {
+	global $vehicule;
+	if (!empty($_GET['recherche'])) {
+		extract($_GET);
+		$searchVehicule = $vehicule->searchVehicule($recherche, $annee, $km, $prix_min, $prix_max, $energie1, $vehicule1);
+		foreach($searchVehicule as $vehicule) {
+			echo "waaaaaa"; exit;
+			echo $vehicule['titre'];
+			echo "<br />";
+		}
+	}
+
 
 }
+
+
+
+
