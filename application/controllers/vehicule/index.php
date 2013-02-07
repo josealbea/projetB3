@@ -34,7 +34,7 @@ function do_get() {
   }
   if (isset($_GET['id_membre'])) {
     $id_membre = $_GET['id_membre'];
-    $liste_vehicule = getAllVehiculesByMember($limit_min, $limit_max, $id_membre);
+    $liste_vehicule = $Vehicule->getAllVehiculesByMember($limit_min, $limit_max, $id_membre);
     $dom = new DOMDocument();
     $vehicules = $dom->createElement("vehicules");
     $dom->appendChild($vehicules);
