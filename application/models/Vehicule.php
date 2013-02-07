@@ -76,7 +76,7 @@ class Application_Model_Vehicule {
         }
         $where = (count($wheres) == 0) ? "" : " WHERE " . join(" AND ", $wheres);
 		try {
-            $sql = $bdd->prepare("SELECT * FROM vehicule $where LIMIT :limit_min, :limit_max");
+            $sql = $bdd->prepare("SELECT * FROM vehicule $where ORDER BY date_ajout DESC LIMIT :limit_min, :limit_max");
             $sql->bindValue(":limit_min", $limit_min,  PDO::PARAM_INT);
             $sql->bindValue(":limit_max", $limit_max,  PDO::PARAM_INT);
             $result = $sql->execute();
@@ -89,7 +89,6 @@ class Application_Model_Vehicule {
             else {
                 send_status(404);
             }
-
 		}
 		catch (PDOException $e) {
 		    die('Erreur : '.$e->getMessage());
@@ -160,6 +159,34 @@ class Application_Model_Vehicule {
 	function searchVehicule($type, $recherche, $annee, $km, $prix_min, $prix_max, $energie, $boite_vitesse, $nb_places) {
 		global $bdd;
 		try {
+            if (empty($recherche)) {
+                $recherche = '%';
+            }
+            if (empty($annee)) {
+                $annee = '';
+            }
+            if (empty($type)) {
+                $type = '';
+            }
+            if (empty($km)) {
+                $km = '';
+            }
+            if (empty($prix_min)) {
+                $prix_min = '';
+            }
+            if (empty($prix_max)) {
+                $prix_max = '';
+            }
+            if (empty($energie)) {
+                $energie = '%';
+            }
+            $genre = '%';
+            if (!empty($_GET['titre'])) {
+              $titre = $_GET['titre'];
+            }
+            if (!empty($_GET['genre'])) {
+              $genre = $_GET['genre'];
+            }
                     $sql = $bdd->prepare("SELECT * FROM vehicule WHERE titre LIKE '%:recherche%' AND annee >= ':annee' AND km <= ':km' AND energie = ':energie' AND boite_vitesse = ':boite_vitesse' AND nb_places = ':nb_places' AND id_categorie = ':type' AND prix BETWEEN ':prix_min' AND ':prix_max' ");
                     $sql->bindValue(":recherche", $recherche);
                     $sql->bindValue(":prix_min", $prix_min);
