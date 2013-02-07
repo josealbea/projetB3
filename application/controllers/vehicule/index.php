@@ -19,6 +19,7 @@ function init() {
 }
  
 function do_get() {
+  $Vehicule = new Application_Model_Vehicule();
 		if (!isset($_GET['page'])) {
 			$_GET['page'] = 1;	
 		}
@@ -31,8 +32,69 @@ function do_get() {
   else {
     $type_vehicule = $_GET['type'];
   }
-	$Vehicule = new Application_Model_Vehicule();
-	$liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max, $type_vehicule);
+  if (isset($_GET['id_membre'])) {
+    $id_membre = $_GET['id_membre'];
+    $liste_vehicule = getAllVehiculesByMember($limit_min, $limit_max, $id_membre);
+    $dom = new DOMDocument();
+    $vehicules = $dom->createElement("vehicules");
+    $dom->appendChild($vehicules);
+    foreach($liste_vehicule as $row){
+      $vehicule = $dom->createElement("vehicule");
+      $vehicules->appendChild($vehicule);
+      $vehicule->setAttribute("id", $row['id_vehicule']);
+      $vehicule->setAttribute("titre", utf8_encode($row['titre']));
+      $vehicule->setAttribute("description", utf8_encode($row['description']));
+      $vehicule->setAttribute("prix", utf8_encode($row['prix']));
+      $vehicule->setAttribute("km", utf8_encode($row['km']));
+      $vehicule->setAttribute("annee", utf8_encode($row['annee']));
+      $vehicule->setAttribute("energie", utf8_encode($row['energie']));
+      $vehicule->setAttribute("date_ajout", $row['date_ajout']);
+      $vehicule->setAttribute("date_modification", $row['date_modification']);
+      $vehicule->setAttribute("date_suppression", $row['date_suppression']);
+      $vehicule->setAttribute("boite_vitesse", utf8_encode($row['boite_vitesse']));
+      if ($row['id_categorie'] ==  1) {
+          $vehicule->setAttribute("type_vehicule", "voiture");
+          $vehicule->setAttribute("nb_places", utf8_encode($row['nb_places']));
+      }
+      elseif ($row['id_categorie'] ==  2) {
+          $vehicule->setAttribute("type_vehicule", "moto");
+          $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
+      }
+      elseif ($row['id_categorie'] ==  3) {
+          $vehicule->setAttribute("type_vehicule", "scooter");
+          $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
+      }
+      $user = $dom->createElement("membre");
+      $vehicule->appendChild($user);
+      $rowUser = $Vehicule->getMemberByVehicule($row['id_vehicule']);
+      $user->setAttribute("id", $rowUser['id_membre']);
+      $user->setAttribute("adresse_mail", $rowUser['mail']);
+      $user->setAttribute("nom", utf8_encode($rowUser['nom']));
+      $user->setAttribute("ville", utf8_encode($rowUser['ville']));
+      $user->setAttribute("code_postal", $rowUser['code_postal']);
+      $user->setAttribute("telephone", $rowUser['telephone']);
+      if ($rowUser['type'] == 1) {
+          $user->setAttribute("type_compte", "administrateur");
+      }
+      else if ($rowUser['type'] == 2) {
+          $user->setAttribute("type_compte", "Membre basique");
+      }
+      if ($rowUser['statut'] == 0) {
+          $user->setAttribute("statut_compte", "Compte banni");
+      }
+      else if ($rowUser['statut'] == 1) {
+          $user->setAttribute("statut_compte", "Compte validé");
+      }
+      else if ($rowUser['statut'] == 2) {
+          $user->setAttribute("statut_compte", "En attente de validation");
+      }
+
+      }
+      header("Content-type: text/xml;charset=UTF-8");
+      print $dom->saveXML();
+  }
+  else {
+	$liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max, $type_vehicule, $id_membre);
         $dom = new DOMDocument();
         $vehicules = $dom->createElement("vehicules");
         $dom->appendChild($vehicules);
@@ -90,6 +152,7 @@ function do_get() {
           }
           header("Content-type: text/xml;charset=UTF-8");
           print $dom->saveXML();
+        }
 }
  
 // FONCTION POST
@@ -142,7 +205,6 @@ function do_post() {
 	}
 	else {
 		extract($_POST);
-		$id_membre = 1;
 		$vehicule = new Application_Model_Vehicule;
 		$vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $id_membre, $_POST['id_categorie']);
 	}

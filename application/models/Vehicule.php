@@ -95,11 +95,11 @@ class Application_Model_Vehicule {
 		}
 	}
  
-	function getAllVehiculesByMember($limit_min, $limit_max) {
+	function getAllVehiculesByMember($limit_min, $limit_max, $id_membre) {
 		global $bdd;
 		try {
-                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_membre = :id_member LIMIT :limit_min , :limit_max");
-                    $sql->bindValue(':id_member', $id_member);
+                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_membre = :id_membre LIMIT :limit_min , :limit_max");
+                    $sql->bindValue(':id_membre', $id_membre);
                     $sql->bindValue(':limit_min', $limit_min);
                     $sql->bindValue(':limit_max', $limit_max);
                     $result = $sql->execute();
