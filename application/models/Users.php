@@ -232,29 +232,24 @@ class Application_Model_Users {
             $membre = array();
             if ($result) {
                 $row = $sql->fetch();
+                $membre['code_postal'] = $row['code_postal'];
+                $membre['type'] = $row['type'];
+                $membre['mail'] = $row['mail'];
                 if($sql->rowCount() > 0) {
                     if ($row['statut'] == 2) {
-                        $membre[] = "2";
-                        echo "2";
+                        $membre['statut'] = "2";
                         send_status(204);
                     }
                     else if ($row['statut'] == 3) {
-                        $membre[] = "3";
-                        echo "3";
+                        $membre['statut'] = "3";
                         send_status(204);
                     }
                     else {
-                        $membre[] = "1";
-                        $membre[] = $row['id_membre'];
-                        if ($row['type'] != 2) {
-                            $membre[] = "admin";
-                        }
-                        else {
-                            $membre[] = "membre";
-                        }
-                    send_status(200);
-                    print json_encode($membre);exit;
-                    return $membre;
+                        $membre['statut'] = "1";
+                        $membre['id_membre'] = $row['id_membre'];
+                        send_status(200);
+                        print json_encode($membre);exit;
+                        return $membre;
                     }
                 }
                 else {

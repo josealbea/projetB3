@@ -94,9 +94,7 @@ function do_get() {
  
 // FONCTION POST
 function do_post() {
-	if (!is_admin()) {
-		exit_error(401, "mustBeAdmin");
-	}
+  var_dump($_POST);exit;
 	$erreurs = array();
  
 	parse_str(file_get_contents("php://input"), $_POST);
@@ -144,7 +142,7 @@ function do_post() {
 	}
 	else {
 		extract($_POST);
-		$id_membre = $_SESSION['id_membre'];
+		$id_membre = 1;
 		$vehicule = new Application_Model_Vehicule;
 		$vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $id_membre, $_POST['id_categorie']);
 	}

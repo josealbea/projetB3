@@ -24,10 +24,11 @@ function init() {
 	}
 
 function do_get() {
+	echo "blaaa";
 	global $vehicule;
 	if (!empty($_GET['recherche'])) {
 		extract($_GET);
-		$searchVehicule = $vehicule->searchVehicule($type, $recherche, $annee, $km, $prix_min, $prix_max, $energie, $boite_vitesse, $nb_places);
+		$searchVehicule = $vehicule->searchVehicule($type, $recherche, $annee, $km, $prix_min, $prix_max, $energie, $boite_vitesse, $nb_places, $cylindree);
 		foreach($searchVehicule as $vehicule) {
 			echo "waaaaaa"; exit;
 			echo $vehicule['titre'];
