@@ -157,10 +157,9 @@ function do_get() {
  
 // FONCTION POST
 function do_post() {
-  var_dump($_POST);exit;
 	$erreurs = array();
- 
 	parse_str(file_get_contents("php://input"), $_POST);
+  var_dump($_POST);
 	if (empty($_POST["id_categorie"])) {
 		$erreurs[] = "categorieRequise";
 	}

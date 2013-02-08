@@ -62,7 +62,7 @@ function do_get() {
 // FONCTION POST
 function do_post() {
 	$erreurs = array();
-
+	var_dump($_POST);
 	parse_str(file_get_contents("php://input"), $_POST);
 	if (empty($_POST["password"])) {
 		$erreurs[] = "motDePasseRequis";
@@ -72,9 +72,6 @@ function do_post() {
 	}
 	if (empty($_POST["nom"])) {
 		$erreurs[] = "nomRequis";
-	}
-	if (empty($_POST["ville"])) {
-		$erreurs[] = "villeRequise";
 	}
 	if (empty($_POST["code_postal"])) {
 		$erreurs[] = "codePostalRequis";
@@ -90,6 +87,6 @@ function do_post() {
 		extract($_POST);
 		$password = sha1($password);
 		$membre = new Application_Model_Users();
-		$addUser = $membre->addUser($password, $mail, $nom, $ville, $code_postal, $telephone);
+		$addUser = $membre->addUser($password, $mail, $nom, $code_postal, $telephone);
 	}
 }

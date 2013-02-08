@@ -132,6 +132,7 @@ class Application_Model_Vehicule {
 	}
 	function addVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_membre, $id_categorie) {
 		global $bdd;
+        $id_membre = 1;
 		try {
                     $sql = $bdd->prepare("INSERT INTO vehicule (id_vehicule, titre, description, prix, annee, km, energie, date_ajout, date_modification, date_suppression, statut, boite_vitesse, nb_places, cylindree, id_membre, id_categorie) 
                     VALUES (NULL, :titre, :description, :prix, :annee, :km, :energie, curdate(), '0000-00-00', '0000-00-00', '0', :boite_vitesse, :nb_places, :cylindree, :id_membre, :id_categorie)");
@@ -147,6 +148,7 @@ class Application_Model_Vehicule {
                     $sql->bindValue(":id_membre", $id_membre);
                     $sql->bindValue(":id_categorie", $id_categorie);
                     $result = $sql->execute();
+                    var_dump($id_membre);
                     if ($result) {
                         return true;
                     }

@@ -63,7 +63,7 @@ class Application_Model_Users {
 		}
 	}
 
-	function addUser($password, $mail, $nom, $ville, $code_postal, $telephone) {
+	function addUser($password, $mail, $nom, $code_postal, $telephone) {
             global $bdd;
 		try {
                         $ifuserexist = $bdd->prepare("SELECT * FROM membre WHERE mail = :mail");
@@ -73,11 +73,10 @@ class Application_Model_Users {
                             return false;
                         }
                         $hash = uniqid(sha1($nom));
-			$sql = $bdd->prepare("INSERT INTO membre (id_membre, password, mail, nom, ville, code_postal, telephone, type, statut, hash) VALUES (NULL, :password, :mail, :nom, :ville, :code_postal, :telephone, '2', '2', :hash)");
+			$sql = $bdd->prepare("INSERT INTO membre (id_membre, password, mail, nom, code_postal, telephone, type, statut, hash) VALUES (NULL, :password, :mail, :nom, :code_postal, :telephone, '2', '2', :hash)");
             $sql->bindValue(":password", $password);
             $sql->bindValue(":mail", $mail);
             $sql->bindValue(":nom", $nom);
-            $sql->bindValue(":ville", $ville);
             $sql->bindValue(":code_postal", $code_postal);
             $sql->bindValue(":telephone", $telephone);
             $sql->bindValue(":hash", $hash);
