@@ -18,6 +18,7 @@ function do_post() {
 	$vehicule = new Application_Model_Vehicule;
 	$rows = $vehicule->searchVehicule($_POST['id_categorie'], $_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['cp'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse']);
 	do_get($rows);
+	var_dump($rows); exit;
 }
 
 function do_get($rows) {
