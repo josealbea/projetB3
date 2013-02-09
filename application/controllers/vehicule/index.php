@@ -148,7 +148,6 @@ function do_post() {
 	else {
 		extract($_POST);
 		$vehicule = new Application_Model_Vehicule;
-    var_dump($_POST);exit;
 		$vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $id_membre, $_POST['id_categorie']);
 	}
 }

@@ -159,11 +159,11 @@ class Application_Model_Vehicule {
 		}
 	}
  
-	function searchVehicule($type, $recherche, $annee, $km, $prix_min, $prix_max, $energie, $boite_vitesse, $nb_places) {
+	function searchVehicule($type, $recherche, $annee, $cp, $km, $prix_min, $prix_max, $energie, $boite_vitesse) {
 		global $bdd;
 		try {
             if (empty($recherche)) {
-                $recherche = '%';
+                $recherche = '';
             }
             if (empty($annee)) {
                 $annee = '';
@@ -174,6 +174,9 @@ class Application_Model_Vehicule {
             if (empty($km)) {
                 $km = '';
             }
+            if (empty($cp)) {
+                $cp = '';
+            }
             if (empty($prix_min)) {
                 $prix_min = '';
             }
@@ -181,25 +184,20 @@ class Application_Model_Vehicule {
                 $prix_max = '';
             }
             if (empty($energie)) {
-                $energie = '%';
+                $energie = '';
             }
-            $genre = '%';
-            if (!empty($_GET['titre'])) {
-              $titre = $_GET['titre'];
+            if (empty($boite_vitesse)) {
+                $boite_vitesse = '';
             }
-            if (!empty($_GET['genre'])) {
-              $genre = $_GET['genre'];
-            }
-                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE titre LIKE '%:recherche%' AND annee >= ':annee' AND km <= ':km' AND energie = ':energie' AND boite_vitesse = ':boite_vitesse' AND nb_places = ':nb_places' AND id_categorie = ':type' AND prix BETWEEN ':prix_min' AND ':prix_max' ");
+                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE titre LIKE '%:recherche%' OR description LIKE '%:description' AND annee >= ':annee' AND km <= ':km' AND energie = ':energie' AND boite_vitesse = ':boite_vitesse' AND id_categorie = ':type' AND prix BETWEEN ':prix_min' AND ':prix_max' ");
                     $sql->bindValue(":recherche", $recherche);
                     $sql->bindValue(":prix_min", $prix_min);
                     $sql->bindValue(":prix_max", $prix_max);
                     $sql->bindValue(":annee", $annee);
-                    $sql->bindValue(":km", $km);
+                    $sql->bindValue(":km", $km)
+                    $sql->bindValue(":cp", $cp);
                     $sql->bindValue(":energie", $energie);
                     $sql->bindValue(":boite_vitesse", $boite_vitesse);
-                    $sql->bindValue(":nb_places", $nb_places);
-                    //$sql->bindValue(":cylindree", $cylindree);
                     $sql->bindValue(":id_categorie", $type);
                     $result = $sql->execute();
                     if ($result) {
