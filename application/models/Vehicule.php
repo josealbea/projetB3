@@ -99,9 +99,9 @@ class Application_Model_Vehicule {
 		global $bdd;
 		try {
                     $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_membre = :id_membre LIMIT :limit_min , :limit_max");
-                    $sql->bindValue(':id_membre', $id_membre);
-                    $sql->bindValue(':limit_min', $limit_min);
-                    $sql->bindValue(':limit_max', $limit_max);
+                    $sql->bindValue(':id_membre', $id_membre, PDO::PARAM_INT);
+                    $sql->bindValue(':limit_min', $limit_min, PDO::PARAM_INT);
+                    $sql->bindValue(':limit_max', $limit_max, PDO::PARAM_INT);
                     $result = $sql->execute();
                     if ($result) {
                             $rows = $sql->fetchAll();
@@ -148,8 +148,8 @@ class Application_Model_Vehicule {
                     $sql->bindValue(":id_membre", $id_membre);
                     $sql->bindValue(":id_categorie", $id_categorie);
                     $result = $sql->execute();
-                    var_dump($id_membre);
                     if ($result) {
+                        //self::uploadImage()
                         return true;
                     }
 		}
@@ -265,7 +265,7 @@ class Application_Model_Vehicule {
 		}
 	}
         
-        function uploadImage($url_image, $nom_image, $id_vehicule) {
+        function uploadImage($url_image, $id_vehicule) {
             global $bdd;
 		try {
                     if (!self::ifVehiculeExist($id_vehicule)) {
@@ -273,11 +273,11 @@ class Application_Model_Vehicule {
                         return false;
                     }
                     else {
-                        $sql = $bdd->prepare("INSERT INTO photo (id_photo, titre, url, id_vehicule) VALUES (NULL, ':nom_photo', ':nom_image', ':id_vehicule')");
-                        $sql->bindValue(":id_vehicule", $id_vehicule);
+                        $sql = $bdd->prepare("INSERT INTO photo (id_photo, url, id_vehicule) VALUES (NULL, ':url_image', ':id_vehicule')");
+                        $sql->bindValue(":id_vehicule", $id_vehicule, PDO::PARAM_INT);
                         $sql->bindValue(":url_image", $url_image);
-                        $sql->bindValue(":nom_image", $nom_image);
                         $result = $sql->execute();
+                        var_dump($sql);exit;
                         if ($result) {
                             return true;
                         }
