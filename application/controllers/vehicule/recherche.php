@@ -17,7 +17,7 @@ function do_post() {
 	parse_str(file_get_contents("php://input"), $_POST);
 	$vehicule = new Application_Model_Vehicule;
 	$rows = $vehicule->searchVehicule($_POST['id_categorie'], $_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['cp'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse']);
-	self::do_get($rows);
+	$this->do_get($rows);
 }
 
 function do_get($rows) {
