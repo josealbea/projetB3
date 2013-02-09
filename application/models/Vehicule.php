@@ -74,12 +74,12 @@ class Application_Model_Vehicule {
         if ($type_vehicule != NULL) {
             $wheres[] = "id_categorie=$type_vehicule";
         }
-        $where = (count($wheres) == 0) ? "" : " WHERE " . join(" AND ", $wheres);
+        $req = (count($wheres) == 0) ? "" : " WHERE " . join(" AND ", $wheres);
 		try {
-            $sql = $bdd->prepare("SELECT * FROM vehicule :where ORDER BY date_ajout DESC LIMIT :limit_min, :limit_max");
+            $sql = $bdd->prepare("SELECT * FROM vehicule :req ORDER BY date_ajout DESC LIMIT :limit_min, :limit_max");
             $sql->bindValue(":limit_min", $limit_min,  PDO::PARAM_INT);
             $sql->bindValue(":limit_max", $limit_max,  PDO::PARAM_INT);
-            $sql->bindValue(':where', $where)
+            $sql->bindValue(':req', $req)
             $result = $sql->execute();
             if($sql->fetchColumn() > 0) {
                 if ($result) {
