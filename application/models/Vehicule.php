@@ -194,7 +194,7 @@ class Application_Model_Vehicule {
                     $sql->bindValue(":prix_min", $prix_min);
                     $sql->bindValue(":prix_max", $prix_max);
                     $sql->bindValue(":annee", $annee);
-                    $sql->bindValue(":km", $km)
+                    $sql->bindValue(":km", $km);
                     $sql->bindValue(":cp", $cp);
                     $sql->bindValue(":energie", $energie);
                     $sql->bindValue(":boite_vitesse", $boite_vitesse);
