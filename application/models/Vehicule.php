@@ -149,6 +149,7 @@ class Application_Model_Vehicule {
                     $sql->bindValue(":id_categorie", $id_categorie);
                     $result = $sql->execute();
                     if ($result) {
+                        return $sql->lastInsertId();
                         //self::uploadImage()
                         return true;
                     }
