@@ -71,7 +71,7 @@ class Application_Model_Vehicule {
 	function getAllVehicules($limit_min, $limit_max, $type_vehicule) {
 		global $bdd;
          $wheres = array();
-        if ($type_vehicule != "") {
+        if ($type_vehicule != NULL) {
             $wheres[] = "id_categorie=$type_vehicule";
         }
         $where = (count($wheres) == 0) ? "" : " WHERE " . join(" AND ", $wheres);
@@ -79,6 +79,7 @@ class Application_Model_Vehicule {
             $sql = $bdd->prepare("SELECT * FROM vehicule $where ORDER BY date_ajout DESC LIMIT :limit_min, :limit_max");
             $sql->bindValue(":limit_min", $limit_min,  PDO::PARAM_INT);
             $sql->bindValue(":limit_max", $limit_max,  PDO::PARAM_INT);
+            var_dump($sql);exit;
             $result = $sql->execute();
             if($sql->fetchColumn() > 0) {
                 if ($result) {
