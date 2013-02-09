@@ -35,6 +35,10 @@ function do_get() {
   if (isset($_GET['id_membre'])) {
     $id_membre = $_GET['id_membre'];
     $liste_vehicule = $Vehicule->getAllVehiculesByMember($limit_min, $limit_max, $id_membre);
+  }
+  else {
+    $liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max, $type_vehicule);
+  }
     $dom = new DOMDocument();
     $vehicules = $dom->createElement("vehicules");
     $dom->appendChild($vehicules);
@@ -92,67 +96,6 @@ function do_get() {
       }
       header("Content-type: text/xml;charset=UTF-8");
       print $dom->saveXML();
-  }
-  else {
-	$liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max, $type_vehicule);
-        $dom = new DOMDocument();
-        $vehicules = $dom->createElement("vehicules");
-        $dom->appendChild($vehicules);
-        foreach($liste_vehicule as $row){
-          $vehicule = $dom->createElement("vehicule");
-          $vehicules->appendChild($vehicule);
-          $vehicule->setAttribute("id", $row['id_vehicule']);
-          $vehicule->setAttribute("titre", utf8_encode($row['titre']));
-          $vehicule->setAttribute("description", utf8_encode($row['description']));
-          $vehicule->setAttribute("prix", utf8_encode($row['prix']));
-          $vehicule->setAttribute("km", utf8_encode($row['km']));
-          $vehicule->setAttribute("annee", utf8_encode($row['annee']));
-          $vehicule->setAttribute("energie", utf8_encode($row['energie']));
-          $vehicule->setAttribute("date_ajout", $row['date_ajout']);
-          $vehicule->setAttribute("date_modification", $row['date_modification']);
-          $vehicule->setAttribute("date_suppression", $row['date_suppression']);
-          $vehicule->setAttribute("boite_vitesse", utf8_encode($row['boite_vitesse']));
-          if ($row['id_categorie'] ==  1) {
-              $vehicule->setAttribute("type_vehicule", "voiture");
-              $vehicule->setAttribute("nb_places", utf8_encode($row['nb_places']));
-          }
-          elseif ($row['id_categorie'] ==  2) {
-              $vehicule->setAttribute("type_vehicule", "moto");
-              $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
-          }
-          elseif ($row['id_categorie'] ==  3) {
-              $vehicule->setAttribute("type_vehicule", "scooter");
-              $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
-          }
-          $user = $dom->createElement("membre");
-          $vehicule->appendChild($user);
-          $rowUser = $Vehicule->getMemberByVehicule($row['id_vehicule']);
-          $user->setAttribute("id", $rowUser['id_membre']);
-          $user->setAttribute("adresse_mail", $rowUser['mail']);
-          $user->setAttribute("nom", utf8_encode($rowUser['nom']));
-          $user->setAttribute("ville", utf8_encode($rowUser['ville']));
-          $user->setAttribute("code_postal", $rowUser['code_postal']);
-          $user->setAttribute("telephone", $rowUser['telephone']);
-          if ($rowUser['type'] == 1) {
-              $user->setAttribute("type_compte", "administrateur");
-          }
-          else if ($rowUser['type'] == 2) {
-              $user->setAttribute("type_compte", "Membre basique");
-          }
-          if ($rowUser['statut'] == 0) {
-              $user->setAttribute("statut_compte", "Compte banni");
-          }
-          else if ($rowUser['statut'] == 1) {
-              $user->setAttribute("statut_compte", "Compte validé");
-          }
-          else if ($rowUser['statut'] == 2) {
-              $user->setAttribute("statut_compte", "En attente de validation");
-          }
- 
-          }
-          header("Content-type: text/xml;charset=UTF-8");
-          print $dom->saveXML();
-        }
 }
  
 // FONCTION POST
