@@ -159,6 +159,7 @@ function do_get() {
 function do_post() {
 	$erreurs = array();
 	parse_str(file_get_contents("php://input"), $_POST);
+  var_dump($_POST);
 	if (empty($_POST["id_categorie"])) {
 		$erreurs[] = "categorieRequise";
 	}
@@ -204,11 +205,9 @@ function do_post() {
 	else {
 		extract($_POST);
 		$vehicule = new Application_Model_Vehicule;
-    $_SESSION['id_membre'] = 2
-		$id_v = $vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $_SESSION['id_membre'], $_POST['id_categorie']);
-	  //echo $id_v;
-    //self::addImage($_FILES, $)
-  }
+    var_dump($_POST);exit;
+		$vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $id_membre, $_POST['id_categorie']);
+	}
 }
  
 function check_extension($ext) {
