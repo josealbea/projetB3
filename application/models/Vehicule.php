@@ -79,7 +79,6 @@ class Application_Model_Vehicule {
             $sql = $bdd->prepare("SELECT * FROM vehicule $where ORDER BY date_ajout DESC LIMIT :limit_min, :limit_max");
             $sql->bindValue(":limit_min", $limit_min,  PDO::PARAM_INT);
             $sql->bindValue(":limit_max", $limit_max,  PDO::PARAM_INT);
-            var_dump($sql);exit;
             $result = $sql->execute();
             if($sql->fetchColumn() > 0) {
                 if ($result) {
