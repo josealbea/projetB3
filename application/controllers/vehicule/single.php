@@ -93,9 +93,6 @@ function do_get() {
     }
 
 function do_put() {
-  if (!is_admin()) {
-    exit_error(401, "mustBeAdmin");
-  }
   $erreurs = array();
   // Les parametres passés en put
   parse_str(file_get_contents("php://input"), $_PUT);
@@ -157,9 +154,6 @@ function do_put() {
 
 function do_delete() {
   global $id;
-  if (!is_admin()) {
-    exit_error(401, "mustBeAdmin");
-  }
   if (empty($_GET["id"])) {
     exit_error(400, "idRequis"); 
   }
