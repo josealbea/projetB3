@@ -94,7 +94,7 @@ function do_get() {
       print $dom->saveXML();
   }
   else {
-	$liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max, $type_vehicule, $id_membre);
+	$liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max, $type_vehicule);
         $dom = new DOMDocument();
         $vehicules = $dom->createElement("vehicules");
         $dom->appendChild($vehicules);
