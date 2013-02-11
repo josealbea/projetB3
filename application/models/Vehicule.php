@@ -148,7 +148,7 @@ class Application_Model_Vehicule {
 			die('Erreur : '.$e->getMessage());
 		}
 	}
-	function addVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_membre, $id_categorie) {
+	function addVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_membre, $id_categorie, $photo) {
 		global $bdd;
         $id_membre = 1;
 		try {
@@ -167,8 +167,8 @@ class Application_Model_Vehicule {
                     $sql->bindValue(":id_categorie", $id_categorie);
                     $result = $sql->execute();
                     if ($result) {
-                        return $sql->lastInsertId();
-                        //self::uploadImage()
+                        //$lastid =  $sql->lastInsertId();
+                        //uploadImage($lastid, $photo);
                         return true;
                     }
 		}
@@ -291,7 +291,7 @@ class Application_Model_Vehicule {
 		}
 	}
         
-        function uploadImage($url_image, $id_vehicule) {
+        function uploadImage($id_vehicule, $url_image) {
             global $bdd;
 		try {
                     if (!self::ifVehiculeExist($id_vehicule)) {
@@ -299,11 +299,10 @@ class Application_Model_Vehicule {
                         return false;
                     }
                     else {
-                        $sql = $bdd->prepare("INSERT INTO photo (id_photo, url, id_vehicule) VALUES (NULL, ':url_image', ':id_vehicule')");
+                        $sql = $bdd->prepare("INSERT INTO photo (id_photo, url, id_vehicule) VALUES (NULL, :url_image, :id_vehicule)");
                         $sql->bindValue(":id_vehicule", $id_vehicule, PDO::PARAM_INT);
                         $sql->bindValue(":url_image", $url_image);
                         $result = $sql->execute();
-                        var_dump($sql);exit;
                         if ($result) {
                             return true;
                         }
