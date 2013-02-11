@@ -182,6 +182,7 @@ class Application_Model_Vehicule {
         try {
             $wheres = array();
             $between = '';
+            $whereCond = '';
             if (!empty($type)) {
                 $wheres[] = "id_categorie = ".$type;
             }
@@ -214,15 +215,13 @@ class Application_Model_Vehicule {
                 $between .= "prix BETWEEN ".$prix_min." AND ".$prix_max;
             }
             if (!empty($wheres)) {
-                $where = "WHERE ".join(" AND ", $wheres);
+                $whereCond = "WHERE ".join(" AND ", $wheres);
             }
 
-            $sql = $bdd->prepare('SELECT * FROM vehicule '.$where.' '.$between);
-            $sql->bindValue(':where', $where);
+            $sql = $bdd->prepare('SELECT * FROM vehicule :whereCond :between');
+            $sql->bindValue(':whereCond', $whereCond);
             $sql->bindValue(':between', $between);
-            //var_dump($sql);exit;
             $result = $sql->execute();
-            echo $sql->rowCount();exit;
             if($sql->rowCount() > 0) {
                 if ($result) {
                         $rows = $sql->fetchAll();
