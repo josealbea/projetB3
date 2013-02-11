@@ -180,16 +180,49 @@ class Application_Model_Vehicule {
 	function searchVehicule($type, $recherche, $annee, $cp, $km, $prix_min, $prix_max, $energie, $boite_vitesse) {
 		global $bdd;
         try {
-            $sql = $bdd->prepare('SELECT * FROM vehicule WHERE titre LIKE :recherche OR (description LIKE :recherche) AND annee >= :annee AND km <= :km AND energie = :energie AND boite_vitesse = :boite_vitesse AND id_categorie = :type AND prix BETWEEN :prix_min AND :prix_max');
-            $sql->bindValue(':recherche', '%'.$recherche.'%');
-            $sql->bindValue(':annee', $annee);
-            $sql->bindValue(':km', $km);
-            $sql->bindValue(':energie', $energie);
-            $sql->bindValue('boite_vitesse', $boite_vitesse);
-            $sql->bindValue('type', $type);
-            $sql->bindValue('prix_min', $prix_min);
-            $sql->bindValue('prix_max', $prix_max); 
+            $wheres = array();
+            $between = '';
+            if (!empty($type)) {
+                $wheres[] = "id_categorie = ".$type;
+            }
+
+            if (!empty($recherche)) {
+                $wheres[] = "titre LIKE '%".$recherche."%' OR description LIKE '%".$recherche."%'";
+            }
+
+            if (!empty($annee)) {
+                $wheres[] = "annee = ".$annee;
+            }
+
+            if (!empty($cp)) {
+                $wheres[] = "code_postal = ".$cp;
+            }
+
+            if (!empty($km)) {
+                $wheres[] = "km = ".$km;
+            }
+
+            if (!empty($energie)) {
+                $wheres[] = "energie = '".$energie."'";
+            }
+
+            if (!empty($boite_vitesse)) {
+                $wheres[] = "boite_vitesse = '".$boite_vitesse."'";
+            }
+
+            if (!empty($prix_min) AND !empty($prix_max) ) {
+                $between .= "prix BETWEEN ".$prix_min." AND ".$prix_max;
+            }
+            if (!empty($wheres)) {
+                $where = "WHERE ".join(" AND ", $wheres);
+            }
+
+            $sql = $bdd->prepare('SELECT * FROM vehicule '.$where.' '.$between);
+            $sql->bindValue(':where', $where);
+            $sql->bindValue(':between', $between);
+            //var_dump($sql);exit;
             $result = $sql->execute();
+            echo $sql->rowCount();exit;
             if($sql->rowCount() > 0) {
                 if ($result) {
                         $rows = $sql->fetchAll();
