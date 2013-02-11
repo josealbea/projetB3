@@ -68,15 +68,10 @@ class Application_Model_Vehicule {
         }
     }
  
-	function getAllVehicules($limit_min, $limit_max, $type_vehicule) {
-		global $bdd;
-         $wheres = array();
-        if ($type_vehicule != NULL) {
-            $wheres[] = "id_categorie=$type_vehicule";
-        }
-        $where = (count($wheres) == 0) ? "" : " WHERE " . join(" AND ", $wheres);
-		try {
-            $sql = $bdd->prepare("SELECT * FROM vehicule $where ORDER BY date_ajout DESC LIMIT :limit_min, :limit_max");
+	function getAllVehicules($limit_min, $limit_max) {
+        global $bdd;
+        try {
+            $sql = $bdd->prepare("SELECT * FROM vehicule ORDER BY date_ajout DESC LIMIT :limit_min, :limit_max");
             $sql->bindValue(":limit_min", $limit_min,  PDO::PARAM_INT);
             $sql->bindValue(":limit_max", $limit_max,  PDO::PARAM_INT);
             $result = $sql->execute();
@@ -89,11 +84,34 @@ class Application_Model_Vehicule {
             else {
                 send_status(404);
             }
-		}
-		catch (PDOException $e) {
-		    die('Erreur : '.$e->getMessage());
-		}
-	}
+        }
+        catch (PDOException $e) {
+            die('Erreur : '.$e->getMessage());
+        }
+    }
+
+    function getAllVehiculesByType($limit_min, $limit_max, $type_vehicule) {
+        global $bdd;
+        try {
+            $sql = $bdd->prepare("SELECT * FROM vehicule WHERE id_categorie = :type_vehicule ORDER BY date_ajout DESC LIMIT :limit_min, :limit_max");
+            $sql->bindValue(":limit_min", $limit_min,  PDO::PARAM_INT);
+            $sql->bindValue(":limit_max", $limit_max,  PDO::PARAM_INT);
+            $sql->bindValue(":type_vehicule", $type_vehicule);
+            $result = $sql->execute();
+            if($sql->rowCount() > 0) {
+                if ($result) {
+                        $rows = $sql->fetchAll();
+                        return $rows;
+                }
+            }
+            else {
+                send_status(404);
+            }
+        }
+        catch (PDOException $e) {
+            die('Erreur : '.$e->getMessage());
+        }
+    }
  
 	function getAllVehiculesByMember($limit_min, $limit_max, $id_membre) {
 		global $bdd;
@@ -159,11 +177,11 @@ class Application_Model_Vehicule {
 		}
 	}
  
-	function searchVehicule($type, $recherche, $annee, $km, $prix_min, $prix_max, $energie, $boite_vitesse, $nb_places) {
+	function searchVehicule($type, $recherche, $annee, $cp, $km, $prix_min, $prix_max, $energie, $boite_vitesse) {
 		global $bdd;
 		try {
             if (empty($recherche)) {
-                $recherche = '%';
+                $recherche = '';
             }
             if (empty($annee)) {
                 $annee = '';
@@ -174,6 +192,9 @@ class Application_Model_Vehicule {
             if (empty($km)) {
                 $km = '';
             }
+            if (empty($cp)) {
+                $cp = '';
+            }
             if (empty($prix_min)) {
                 $prix_min = '';
             }
@@ -181,29 +202,25 @@ class Application_Model_Vehicule {
                 $prix_max = '';
             }
             if (empty($energie)) {
-                $energie = '%';
+                $energie = '';
             }
-            $genre = '%';
-            if (!empty($_GET['titre'])) {
-              $titre = $_GET['titre'];
+            if (empty($boite_vitesse)) {
+                $boite_vitesse = '';
             }
-            if (!empty($_GET['genre'])) {
-              $genre = $_GET['genre'];
-            }
-                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE titre LIKE '%:recherche%' AND annee >= ':annee' AND km <= ':km' AND energie = ':energie' AND boite_vitesse = ':boite_vitesse' AND nb_places = ':nb_places' AND id_categorie = ':type' AND prix BETWEEN ':prix_min' AND ':prix_max' ");
-                    $sql->bindValue(":recherche", $recherche);
+                    $sql = $bdd->prepare("SELECT * FROM vehicule WHERE titre LIKE '%$recherche%' OR description LIKE '%$recherche%' AND annee >= '$annee' AND km <= '$km' AND energie = '$energie' AND boite_vitesse = '$boite_vitesse' AND id_categorie = '$type' AND prix BETWEEN '$prix_min' AND '$prix_max' ");
+                    $sql->bindValue(":recherche", "%".$recherche."%");
                     $sql->bindValue(":prix_min", $prix_min);
                     $sql->bindValue(":prix_max", $prix_max);
                     $sql->bindValue(":annee", $annee);
                     $sql->bindValue(":km", $km);
+                    //$sql->bindValue(":cp", $cp);
                     $sql->bindValue(":energie", $energie);
                     $sql->bindValue(":boite_vitesse", $boite_vitesse);
-                    $sql->bindValue(":nb_places", $nb_places);
-                    //$sql->bindValue(":cylindree", $cylindree);
                     $sql->bindValue(":id_categorie", $type);
                     $result = $sql->execute();
                     if ($result) {
-                            $rows = $sql->fetchAll();
+                            $rows = $sql->fetch();
+                            var_dump($sql);exit;
                             return $rows;
                     }
 		}
