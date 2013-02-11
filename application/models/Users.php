@@ -92,7 +92,7 @@ class Application_Model_Users {
 	}
 
 
-    function setUser($password, $mail, $nom, $ville, $code_postal, $telephone, $id_membre) {
+    function setUser($mail, $nom, $code_postal, $telephone, $id_membre) {
         global $bdd;
         
         try {
@@ -100,11 +100,9 @@ class Application_Model_Users {
                 send_status(404);
             }
             else {
-                $sql = $bdd->prepare("UPDATE membre SET password = :password, mail = :mail, nom = :nom, ville = :ville, code_postal = :code_postal, telephone = :telephone WHERE id_membre = :id_membre");
-                $sql->bindValue(":password", $password);
+                $sql = $bdd->prepare("UPDATE membre SET mail = :mail, nom = :nom, code_postal = :code_postal, telephone = :telephone WHERE id_membre = :id_membre");
                 $sql->bindValue(":mail", $mail);
                 $sql->bindValue(":nom", $nom);
-                $sql->bindValue(":ville", $ville);
                 $sql->bindValue(":code_postal", $code_postal);
                 $sql->bindValue(":telephone", $telephone);
                 $sql->bindValue(":id_membre", $id_membre);

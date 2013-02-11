@@ -43,8 +43,7 @@ function do_get() {
           $dom->appendChild($membre);
           $membre->setAttribute("id", $row['id_membre']);
           $membre->setAttribute("mail", $row['mail']);
-          $membre->setAttribute("nom", utf8_decode($row['nom']));
-          $membre->setAttribute("ville", utf8_encode($row['ville']));
+          $membre->setAttribute("nom", utf8_encode($row['nom']));
           $membre->setAttribute("code_postal", $row['code_postal']);
           $membre->setAttribute("telephone", $row['telephone']);
           header("Content-type: text/xml;charset=UTF-8");
@@ -53,23 +52,14 @@ function do_get() {
 }
 
 function do_put() {
-  if (!is_admin()) {
-    exit_error(401, "mustBeAdmin");
-  }
   $erreurs = array();
   // Les parametres passés en put
   parse_str(file_get_contents("php://input"), $_PUT);
-    if (empty($_PUT["password"])) {
-            $erreurs[] = "motDePasseRequis";
-    }
     if (empty($_PUT["mail"])) {
             $erreurs[] = "AdresseEmailRequise";
     }
     if (empty($_PUT["nom"])) {
             $erreurs[] = "nomRequis";
-    }
-    if (empty($_PUT["ville"])) {
-            $erreurs[] = "villeRequise";
     }
     if (empty($_PUT["code_postal"])) {
             $erreurs[] = "codePostalRequis";
@@ -85,7 +75,7 @@ function do_put() {
     global $editUser;
     $membre = new Application_Model_Users();
     $id = $_GET["id"];
-    $editUser = $membre->setUser($_PUT["password"], $_PUT["mail"], $_PUT["nom"], $_PUT["ville"], $_PUT["code_postal"], $_PUT["telephone"], $id);
+    $editUser = $membre->setUser($_PUT["mail"], $_PUT["nom"], $_PUT["code_postal"], $_PUT["telephone"], $id);
     if ($editUser) {
         send_status(200);
     }
@@ -97,9 +87,6 @@ function do_put() {
 
 function do_delete() {
   global $id;
-  if (!is_admin()) {
-    exit_error(401, "mustBeAdmin");
-  }
   if (empty($_GET["id"])) {
     exit_error(400, "idRequis"); 
   }
