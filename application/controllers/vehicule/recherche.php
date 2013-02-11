@@ -16,9 +16,35 @@ function init() {
 function do_post() {
 	parse_str(file_get_contents("php://input"), $_POST);
 	$vehicule = new Application_Model_Vehicule;
-	$rows = $vehicule->searchVehicule($_POST['id_categorie'], $_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['cp'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse']);
+	if (empty($_POST['id_categorie'])) {
+		$_POST['id_categorie'] = '';
+	}
+	if (empty($_POST['recherche'])) {
+		$_POST['recherche'] = '';
+	}
+	if (empty($_POST['annee'])) {
+		$_POST['annee'] = '';
+	}
+	if (empty($_POST['cp'])) {
+		$_POST['cp'] = '';
+	}
+	if (empty($_POST['km'])) {
+		$_POST['km'] = '';
+	}
+	if (empty($_POST['prix_min'])) {
+		$_POST['prix_min'] = '';
+	}
+	if (empty($_POST['prix_max'])) {
+		$_POST['prix_max'] = '';
+	}
+	if (empty($_POST['energie'])) {
+		$_POST['energie'] = '';
+	}
+	if (empty($_POST['boite_vitesse'])) {
+		$_POST['boite_vitesse'] = '';
+	}
+	$rows = $vehicule->searchVehicule($_POST['id_categorie'], $_POST['recherche'], $_POST['annee'], $_POST['cp'], $_POST['km'], $_POST['prix_min'], $_POST['prix_max'], $_POST['energie'], $_POST['boite_vitesse']);
 	do_get($rows);
-	var_dump($rows); exit;
 }
 
 function do_get($rows) {

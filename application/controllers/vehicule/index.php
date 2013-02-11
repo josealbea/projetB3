@@ -36,8 +36,12 @@ function do_get() {
     $id_membre = $_GET['id_membre'];
     $liste_vehicule = $Vehicule->getAllVehiculesByMember($limit_min, $limit_max, $id_membre);
   }
+  elseif (isset($_GET['type'])) {
+    $id_type = $_GET['type'];
+    $liste_vehicule = $Vehicule->getAllVehiculesByType($limit_min, $limit_max, $id_type);
+  }
   else {
-    $liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max, $type_vehicule);
+    $liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max);
   }
     $dom = new DOMDocument();
     $vehicules = $dom->createElement("vehicules");
