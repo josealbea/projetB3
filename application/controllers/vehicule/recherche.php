@@ -1,8 +1,8 @@
 <?php 
 init();
 switch ($_SERVER['REQUEST_METHOD']) {
-	case "POST":
-	do_post();
+	case "GET":
+	do_get();
 	break;
 	default:
 	send_status(405);
@@ -13,48 +13,38 @@ function init() {
 	require APPLICATION_PATH."models/Vehicule.php";
 }
 
-function do_post() {
-	parse_str(file_get_contents("php://input"), $_POST);
-	$vehicule = new Application_Model_Vehicule;
-	if (empty($_POST['id_categorie'])) {
-		$_POST['id_categorie'] = '';
+function do_get() {
+	$Vehicule = new Application_Model_Vehicule;
+	if (empty($_GET['id_categorie'])) {
+		$_GET['id_categorie'] = '';
 	}
-	if (empty($_POST['recherche'])) {
-		$_POST['recherche'] = '';
+	if (empty($_GET['recherche'])) {
+		$_GET['recherche'] = '';
 	}
-	if (empty($_POST['annee'])) {
-		$_POST['annee'] = '';
+	if (empty($_GET['annee'])) {
+		$_GET['annee'] = '';
 	}
-	if (empty($_POST['cp'])) {
-		$_POST['cp'] = '';
+	if (empty($_GET['cp'])) {
+		$_GET['cp'] = '';
 	}
-	if (empty($_POST['km'])) {
-		$_POST['km'] = '';
+	if (empty($_GET['km'])) {
+		$_GET['km'] = '';
 	}
-	if (empty($_POST['prix_min'])) {
-		$_POST['prix_min'] = '';
+	if (empty($_GET['prix_min'])) {
+		$_GET['prix_min'] = '';
 	}
-	if (empty($_POST['prix_max'])) {
-		$_POST['prix_max'] = '';
+	if (empty($_GET['prix_max'])) {
+		$_GET['prix_max'] = '';
 	}
-	if (empty($_POST['energie'])) {
-		$_POST['energie'] = '';
+	if (empty($_GET['energie'])) {
+		$_GET['energie'] = '';
 	}
-	if (empty($_POST['boite_vitesse'])) {
-		$_POST['boite_vitesse'] = '';
+	if (empty($_GET['boite_vitesse'])) {
+		$_GET['boite_vitesse'] = '';
 	}
-	$rows = $vehicule->searchVehicule($_POST['id_categorie'], $_POST['recherche'], $_POST['annee'], $_POST['cp'], $_POST['km'], $_POST['prix_min'], $_POST['prix_max'], $_POST['energie'], $_POST['boite_vitesse']);
-	do_get($rows);
-}
+	//var_dump($_GET);
+	$rows = $Vehicule->searchVehicule($_GET['id_categorie'], $_GET['recherche'], $_GET['annee'], $_GET['cp'], $_GET['km'], $_GET['prix_min'], $_GET['prix_max'], $_GET['energie'], $_GET['boite_vitesse']);
 
-function do_get($rows) {
-	$Vehicule = new Application_Model_Vehicule();
-		if (!isset($_GET['page'])) {
-			$_GET['page'] = 1;	
-		}
-		$limit_min = ($_GET['page'] - 1) * 10;
-  $limit_max = ($_GET['page'] * 10);
-  global $rows;
     $dom = new DOMDocument();
     $vehicules = $dom->createElement("vehicules");
     $dom->appendChild($vehicules);
@@ -83,6 +73,30 @@ function do_get($rows) {
       elseif ($row['id_categorie'] ==  3) {
           $vehicule->setAttribute("type_vehicule", "scooter");
           $vehicule->setAttribute("cylindree", utf8_encode($row['cylindree']));
+      }
+      $user = $dom->createElement("membre");
+      $vehicule->appendChild($user);
+      $rowUser = $Vehicule->getMemberByVehicule($row['id_vehicule']);
+            $user->setAttribute("id", $rowUser['id_membre']);
+      $user->setAttribute("adresse_mail", $rowUser['mail']);
+      $user->setAttribute("nom", utf8_encode($rowUser['nom']));
+      $user->setAttribute("ville", utf8_encode($rowUser['ville']));
+      $user->setAttribute("code_postal", $rowUser['code_postal']);
+      $user->setAttribute("telephone", $rowUser['telephone']);
+      if ($rowUser['type'] == 1) {
+          $user->setAttribute("type_compte", "administrateur");
+      }
+      else if ($rowUser['type'] == 2) {
+          $user->setAttribute("type_compte", "Membre basique");
+      }
+      if ($rowUser['statut'] == 0) {
+          $user->setAttribute("statut_compte", "Compte banni");
+      }
+      else if ($rowUser['statut'] == 1) {
+          $user->setAttribute("statut_compte", "Compte validé");
+      }
+      else if ($rowUser['statut'] == 2) {
+          $user->setAttribute("statut_compte", "En attente de validation");
       }
       }
       header("Content-type: text/xml;charset=UTF-8");
