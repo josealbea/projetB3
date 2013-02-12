@@ -1,8 +1,10 @@
 <?php 
 session_start();
 define("APPLICATION_PATH", dirname(__FILE__)."/application/");
-define("SITE_ROOT", "http://localhost/projetB3/");
+//define("SITE_ROOT", "http://localhost/projetB3/");
 define("SITE_NAME", "Acheter son véhicule");
+//PROD
+define("SITE_ROOT", "http://www.achetervehicule.com/");
 
 // PDO Connect
 require APPLICATION_PATH.'configs/connect.php';
