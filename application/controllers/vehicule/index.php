@@ -150,7 +150,16 @@ function do_post() {
 	}
 	else {
 		$vehicule = new Application_Model_Vehicule;
-		$result = $vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $id_membre, $_POST['id_categorie']);
+    $file_name = $_POST['nom_image'];
+    $file_array = explode ('.',$file_name);
+    $extension = count ($file_array) - 1;
+    $new = substr ($file_name,0,strlen($file_name) -strlen ($file_array[$extension])-1);
+    $nom_image = uniqid($new);
+    $nom_image = $nom_image.'.'.$_POST['ext'];
+		$result = $vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $id_membre, $_POST['id_categorie'], $nom_image);
+    if ($result) {
+      addImage($_POST['image'], $nom_image, $_POST['ext']);
+    }
   }
 }
  
@@ -162,12 +171,9 @@ function check_extension($ext) {
     }
 }
  
-function addImage($image, $id_vehicule) {
-    var_dump($image); 
+function addImage($image, $nom_image, $ext) {
     $valid = false;
-    $nom_image = $image['name'];
-    $ext = strtolower(substr(strrchr($nom_image,'.'),1));
-    if (!self::check_extension($ext)) {
+    if (!check_extension($ext)) {
         $valid = false;
         $erreur = 'Veuillez charger une image';
         send_status(404);
@@ -176,40 +182,20 @@ function addImage($image, $id_vehicule) {
         $valid = true;
         $erreur = '';
     }
-    if($valid)
-    {
-        $max_size = 2000000;
-        if($image['size']>$max_size)
-        {
-            $valid = false;
-            $erreur = 'Fichier trop gros';
-        }
-    }
     
     if($valid)
     {
-        if($image['error']>0)
-        {
-            $valid = false;
-            $erreur = 'Erreur lors du transfert';
-        }
-    }
-    
-    if($valid)
-    {
-        $path_to_image = '../public/uploads/';
-        $path_to_min = '../public/uploads/min/';
+        $path_to_image = '../uploads/';
+        $path_to_min = '../uploads/min/';
         
-        $filename = uniqid($nom_image);
-        
-        $source = $image['tmp_name'];
-        $target = $path_to_image . $filename. '.'. $ext;
+        $source = $image;
+        $target = $path_to_image . $nom_image. '.'. $ext;
         
         move_uploaded_file($source,$target);
         
-        if($ext == 'jpg' || $ext == 'jpeg') {$im = imagecreatefromjpeg($path_to_image.$filename.'.'.$ext);}
-        if($ext == 'png') {$im = imagecreatefrompng($path_to_image.$filename.'.'.$ext);}
-        if($ext == 'gif') { $im = imagecreatefromgif($path_to_image.$filename.'.'.$ext);}
+        if($ext == 'jpg' || $ext == 'jpeg') {$im = imagecreatefromjpeg($path_to_image.$nom_image.'.'.$ext);}
+        if($ext == 'png') {$im = imagecreatefrompng($path_to_image.$nom_image.'.'.$ext);}
+        if($ext == 'gif') { $im = imagecreatefromgif($path_to_image.$nom_image.'.'.$ext);}
         
         $ox = imagesx($im);
         $oy = imagesy($im);
@@ -217,17 +203,6 @@ function addImage($image, $id_vehicule) {
         $ny = floor($oy *($nx/$ox));
         $nm = imagecreatetruecolor($nx,$ny);
         imagecopyresized($nm, $im, 0,0,0,0, $nx,$ny,$ox,$oy);
-        imagejpeg($nm, $path_to_min.$filename.'.'.$ext);
-        
-        $url_image = $filename.'.'.$ext;
-        
-        $uploadImage = new Application_Model_Vehicule;
-        $upload = $uploadImage->uploadPicture($url_image, $nom_image, $id_vehicule);
-        if ($upload) {
-            send_status(200);
-        }
-        else {
-            send_status(400);
-        }
+        imagejpeg($nm, $path_to_min.$nom_image.'.'.$ext);
     }
 }

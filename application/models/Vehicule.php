@@ -167,8 +167,8 @@ class Application_Model_Vehicule {
                     $sql->bindValue(":id_categorie", $id_categorie);
                     $result = $sql->execute();
                     if ($result) {
-                        //$lastid =  $sql->lastInsertId();
-                        //uploadImage($lastid, $photo);
+                        $lastid =  $bdd->lastInsertId();
+                        self::uploadImage($lastid, $photo);
                         return true;
                     }
 		}
