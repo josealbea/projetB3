@@ -218,9 +218,7 @@ class Application_Model_Vehicule {
                 $whereCond = "WHERE ".join(" AND ", $wheres);
             }
 
-            $sql = $bdd->prepare('SELECT * FROM vehicule :whereCond :between');
-            $sql->bindValue(':whereCond', $whereCond);
-            $sql->bindValue(':between', $between);
+            $sql = $bdd->prepare('SELECT * FROM vehicule '.$whereCond.' '.$between);
             $result = $sql->execute();
             if($sql->rowCount() > 0) {
                 if ($result) {
