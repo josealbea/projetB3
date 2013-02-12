@@ -172,6 +172,7 @@ function check_extension($ext) {
 }
  
 function addImage($image, $nom_image, $ext) {
+  var_dump(file_exists($image.'/'.$nom_image));
     $valid = false;
     if (!check_extension($ext)) {
         $valid = false;
@@ -185,13 +186,17 @@ function addImage($image, $nom_image, $ext) {
     
     if($valid)
     {
-        $path_to_image = '../uploads/';
-        $path_to_min = '../uploads/min/';
-        
+        $path_to_image = 'uploads/';
+        $path_to_min = 'uploads/min/';
+        $ifis = is_uploaded_file($image);
+        var_dump($ifis)."<br />";
         $source = $image;
-        $target = $path_to_image . $nom_image. '.'. $ext;
+        $target = $path_to_image . $nom_image;
+        echo $source."<br />";
+        echo $target."<br />";
         
-        move_uploaded_file($source,$target);
+        $move = move_uploaded_file($source,$target);
+        var_dump($move);exit;
         
         if($ext == 'jpg' || $ext == 'jpeg') {$im = imagecreatefromjpeg($path_to_image.$nom_image.'.'.$ext);}
         if($ext == 'png') {$im = imagecreatefrompng($path_to_image.$nom_image.'.'.$ext);}
