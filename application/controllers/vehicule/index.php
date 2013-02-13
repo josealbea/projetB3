@@ -149,17 +149,20 @@ function do_post() {
 		exit_error(400, join(", ", $erreurs));
 	}
 	else {
-		$vehicule = new Application_Model_Vehicule;
-    $file_name = $_POST['nom_image'];
-    $file_array = explode ('.',$file_name);
-    $extension = count ($file_array) - 1;
-    $new = substr ($file_name,0,strlen($file_name) -strlen ($file_array[$extension])-1);
-    $nom_image = uniqid($new);
-    $nom_image = $nom_image.'.'.$_POST['ext'];
-		$result = $vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $id_membre, $_POST['id_categorie'], $nom_image);
-    if ($result) {
-      addImage($_POST['image'], $nom_image, $_POST['ext']);
+    if (empty($_POST['id_membre'])) {
+      $_POST['id_membre'] = 1;
     }
+		$vehicule = new Application_Model_Vehicule;
+    //$file_name = $_POST['nom_image'];
+    //$file_array = explode ('.',$file_name);
+    //$extension = count ($file_array) - 1;
+    //$new = substr ($file_name,0,strlen($file_name) -strlen ($file_array[$extension])-1);
+    //$nom_image = uniqid($new);
+    //$nom_image = $nom_image.'.'.$_POST['ext'];
+		$result = $vehicule->addVehicule($_POST['titre'], $_POST['description'], $_POST['prix'], $_POST['annee'], $_POST['km'], $_POST['energie'], $_POST['boite_vitesse'], $_POST['nb_places'], $_POST['cylindree'], $_POST['id_membre'], $_POST['id_categorie']);
+    //if ($result) {
+      //addImage($_POST['image'], $nom_image, $_POST['ext']);
+    //}
   }
 }
  
@@ -172,7 +175,6 @@ function check_extension($ext) {
 }
  
 function addImage($image, $nom_image, $ext) {
-  var_dump(file_exists($image.'/'.$nom_image));
     $valid = false;
     if (!check_extension($ext)) {
         $valid = false;
@@ -188,15 +190,13 @@ function addImage($image, $nom_image, $ext) {
     {
         $path_to_image = 'uploads/';
         $path_to_min = 'uploads/min/';
-        $ifis = is_uploaded_file($image);
-        var_dump($ifis)."<br />";
         $source = $image;
         $target = $path_to_image . $nom_image;
         echo $source."<br />";
         echo $target."<br />";
         
         $move = move_uploaded_file($source,$target);
-        var_dump($move);exit;
+        
         
         if($ext == 'jpg' || $ext == 'jpeg') {$im = imagecreatefromjpeg($path_to_image.$nom_image.'.'.$ext);}
         if($ext == 'png') {$im = imagecreatefrompng($path_to_image.$nom_image.'.'.$ext);}

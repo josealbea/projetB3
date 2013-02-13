@@ -148,11 +148,11 @@ class Application_Model_Vehicule {
 			die('Erreur : '.$e->getMessage());
 		}
 	}
-	function addVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_membre, $id_categorie, $photo) {
+	function addVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_membre, $id_categorie) {
 		global $bdd;
 		try {
-                    $sql = $bdd->prepare("INSERT INTO vehicule (id_vehicule, titre, description, prix, annee, km, energie, date_ajout, date_modification, date_suppression, statut, boite_vitesse, nb_places, cylindree, id_membre, id_categorie) 
-                    VALUES (NULL, :titre, :description, :prix, :annee, :km, :energie, curdate(), '0000-00-00', '0000-00-00', '0', :boite_vitesse, :nb_places, :cylindree, :id_membre, :id_categorie)");
+                    $sql = $bdd->prepare("INSERT INTO vehicule (id_vehicule, titre, description, prix, annee, km, energie, date_ajout, date_modification, date_suppression, boite_vitesse, nb_places, cylindree, id_membre, id_categorie) 
+                    VALUES (NULL, :titre, :description, :prix, :annee, :km, :energie, curdate(), '0000-00-00', '0000-00-00', :boite_vitesse, :nb_places, :cylindree, :id_membre, :id_categorie)");
                     $sql->bindValue(":titre", ucwords(trim($titre)));
                     $sql->bindValue(":description", trim($description));
                     $sql->bindValue(":prix", $prix);
@@ -166,8 +166,8 @@ class Application_Model_Vehicule {
                     $sql->bindValue(":id_categorie", $id_categorie);
                     $result = $sql->execute();
                     if ($result) {
-                        $lastid =  $bdd->lastInsertId();
-                        self::uploadImage($lastid, $photo);
+                        //$lastid =  $bdd->lastInsertId();
+                        //self::uploadImage($lastid, $photo);
                         return true;
                     }
 		}
