@@ -74,7 +74,7 @@ class Application_Model_Vehicule {
             //if ($type == "membre") {
               //  $where = " WHERE id_membre = ".$id;
             //}
-            else if ($type == "type") {
+            if ($type == "type") {
                 $where = " WHERE id_categorie = ".$id;
             }
             else {
