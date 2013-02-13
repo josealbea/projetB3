@@ -233,6 +233,7 @@ class Application_Model_Vehicule {
             }
             else {
                 send_status(404);
+                return false;
             }
         }
         catch (PDOException $e) {
