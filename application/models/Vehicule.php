@@ -150,7 +150,6 @@ class Application_Model_Vehicule {
 	}
 	function addVehicule($titre, $description, $prix, $annee, $km, $energie, $boite_vitesse, $nb_places, $cylindree, $id_membre, $id_categorie, $photo) {
 		global $bdd;
-        echo $id_membre;exit;
 		try {
                     $sql = $bdd->prepare("INSERT INTO vehicule (id_vehicule, titre, description, prix, annee, km, energie, date_ajout, date_modification, date_suppression, statut, boite_vitesse, nb_places, cylindree, id_membre, id_categorie) 
                     VALUES (NULL, :titre, :description, :prix, :annee, :km, :energie, curdate(), '0000-00-00', '0000-00-00', '0', :boite_vitesse, :nb_places, :cylindree, :id_membre, :id_categorie)");
@@ -192,15 +191,15 @@ class Application_Model_Vehicule {
             }
 
             if (!empty($annee)) {
-                $wheres[] = "annee = ".$annee;
+                $wheres[] = "annee >= ".$annee;
             }
 
             if (!empty($cp)) {
-                $wheres[] = "code_postal = ".$cp;
+                $wheres[] = "membre.code_postal = ".$cp;
             }
 
             if (!empty($km)) {
-                $wheres[] = "km = ".$km;
+                $wheres[] = "km <= ".$km;
             }
 
             if (!empty($energie)) {
@@ -212,13 +211,19 @@ class Application_Model_Vehicule {
             }
 
             if (!empty($prix_min) AND !empty($prix_max) ) {
-                $between .= "prix BETWEEN ".$prix_min." AND ".$prix_max;
+                if (!empty($wheres)) {
+                    $between = "AND prix BETWEEN ".$prix_min." AND ".$prix_max;
+                }
+                else {
+                    $between = "WHERE prix BETWEEN ".$prix_min." AND ".$prix_max;
+                }
+                
             }
             if (!empty($wheres)) {
                 $whereCond = "WHERE ".join(" AND ", $wheres);
             }
 
-            $sql = $bdd->prepare('SELECT * FROM vehicule '.$whereCond.' '.$between);
+            $sql = $bdd->prepare('SELECT * FROM vehicule LEFT JOIN membre ON vehicule.id_membre = membre.id_membre '.$whereCond.' '.$between);
             $result = $sql->execute();
             if($sql->rowCount() > 0) {
                 if ($result) {

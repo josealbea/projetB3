@@ -42,7 +42,6 @@ function do_get() {
 	if (empty($_GET['boite_vitesse'])) {
 		$_GET['boite_vitesse'] = '';
 	}
-	//var_dump($_GET);
 	$rows = $Vehicule->searchVehicule($_GET['id_categorie'], $_GET['recherche'], $_GET['annee'], $_GET['cp'], $_GET['km'], $_GET['prix_min'], $_GET['prix_max'], $_GET['energie'], $_GET['boite_vitesse']);
 
     $dom = new DOMDocument();
