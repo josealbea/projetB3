@@ -61,7 +61,6 @@ function do_get() {
 
 // FONCTION POST
 function do_post() {
-	var_dump($_POST);
 	$erreurs = array();
 	parse_str(file_get_contents("php://input"), $_POST);
 	if (empty($_POST["password"])) {

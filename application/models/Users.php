@@ -192,17 +192,17 @@ class Application_Model_Users {
                     $fetchUser = $fetch->fetch();
                     switch($fetchUser['statut']) {
                         case "0":
-                            return 0;
+                            echo "0";
                         break;
                         case "1":
-                            return 1;
+                            echo "1";
                         break;
                         case "2":
                             $update = $bdd->prepare("UPDATE membre SET statut = '1' WHERE hash = :hash");
                             $update->bindValue(":hash", $hash);
                             $result2 = $update->execute();
                             if ($result2) {
-                                return 2;
+                                echo "2";
                             }
                         
                     }
