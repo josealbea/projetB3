@@ -43,7 +43,10 @@ function do_get() {
 		$_GET['boite_vitesse'] = '';
 	}
 	$rows = $Vehicule->searchVehicule($_GET['id_categorie'], $_GET['recherche'], $_GET['annee'], $_GET['cp'], $_GET['km'], $_GET['prix_min'], $_GET['prix_max'], $_GET['energie'], $_GET['boite_vitesse']);
-
+  if (!$rows) {
+    echo "0";
+  }
+  else {
     $dom = new DOMDocument();
     $vehicules = $dom->createElement("vehicules");
     $dom->appendChild($vehicules);
@@ -100,4 +103,5 @@ function do_get() {
       }
       header("Content-type: text/xml;charset=UTF-8");
       print $dom->saveXML();
+    }
 }
