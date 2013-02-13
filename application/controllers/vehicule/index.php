@@ -47,7 +47,7 @@ function do_get() {
   }
   else {
     $liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max);
-    $vehicules->setAttribute("nb_vehicules", $Vehicule->countNbVehicules());
+    $vehicules->setAttribute("nb_vehicules", $Vehicule->countNbVehicules('all'));
   }
     $dom->appendChild($vehicules);
     foreach($liste_vehicule as $row){
