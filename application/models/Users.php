@@ -158,7 +158,7 @@ class Application_Model_Users {
                  <body>
                   <p>Bonjour '.$rowUser['nom'].' </p>
                   <p>Pour valider votre compte, vous devez cliquez sur le lien suivant : <br />
-                    <a href="'.SITE_ROOT.'users/validation/'.$rowUser['hash'].'">'.SITE_ROOT.'users/validation/'.$rowUser['hash'].'</a><br />
+                    <a href="'.SITE_ROOT.'?controller=user&action=validation&hash='.$rowUser['hash'].'">'.SITE_ROOT.'users/validation/'.$rowUser['hash'].'</a><br />
                     Copiez-coller le lien si vous ne parvenez pas a l\'ouvrir
                   </p>
                   <p>L\'équipe '.SITE_NAME.'</p>
