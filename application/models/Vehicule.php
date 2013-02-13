@@ -67,6 +67,29 @@ class Application_Model_Vehicule {
             die('Erreur : '.$e->getMessage());
         }
     }
+
+    function countNbVehicules($type, $id) {
+        global $bdd;
+        try {
+            //if ($type == "membre") {
+              //  $where = " WHERE id_membre = ".$id;
+            //}
+            else if ($type == "type") {
+                $where = " WHERE id_categorie = ".$id;
+            }
+            else {
+                $where = "";
+            }
+            $sql = $bdd->prepare("SELECT COUNT(*) as nb FROM vehicule ".$where);
+            $result = $sql->execute();
+            if ($result) {
+                return $sql->fetchColumn();
+            }
+        }
+        catch (PDOException $e) {
+            die('Erreur : '.$e->getMessage());
+        }
+    }
  
 	function getAllVehicules($limit_min, $limit_max) {
         global $bdd;

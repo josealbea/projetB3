@@ -23,9 +23,12 @@ function do_get() {
 		if (!isset($_GET['page'])) {
 			$_GET['page'] = 1;	
 		}
-		$limit_min = ($_GET['page'] - 1) * 10;
-  $limit_max = ($_GET['page'] * 10);
+	$limit_min = ($_GET['page'] - 1) * 10;
+  $limit_max = 10;
   global $liste_vehicule;
+
+    $dom = new DOMDocument();
+    $vehicules = $dom->createElement("vehicules");
   if (empty($_GET['type'])) {
     $type_vehicule = "";
   }
@@ -35,16 +38,17 @@ function do_get() {
   if (isset($_GET['id_membre'])) {
     $id_membre = $_GET['id_membre'];
     $liste_vehicule = $Vehicule->getAllVehiculesByMember($limit_min, $limit_max, $id_membre);
+    $vehicules->setAttribute("nb_vehicules", $Vehicule->countNbVehicules('membre', $id_membre));
   }
   elseif (isset($_GET['type'])) {
     $id_type = $_GET['type'];
     $liste_vehicule = $Vehicule->getAllVehiculesByType($limit_min, $limit_max, $id_type);
+    $vehicules->setAttribute("nb_vehicules", $Vehicule->countNbVehicules('type', $id_type));
   }
   else {
     $liste_vehicule = $Vehicule->getAllVehicules($limit_min, $limit_max);
+    $vehicules->setAttribute("nb_vehicules", $Vehicule->countNbVehicules());
   }
-    $dom = new DOMDocument();
-    $vehicules = $dom->createElement("vehicules");
     $dom->appendChild($vehicules);
     foreach($liste_vehicule as $row){
       $vehicule = $dom->createElement("vehicule");
