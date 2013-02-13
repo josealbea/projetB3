@@ -185,7 +185,7 @@ class Application_Model_Users {
             $result = $sql->execute();
             $countUser = $sql->fetchAll();
             if ($result) {
-                if ($countUser > 0) {
+                if ($countUser[0]['nb'] > 0) {
                     $fetch = $bdd->prepare("SELECT * FROM membre WHERE hash = :hash");
                     $fetch->bindValue(":hash", $hash);
                     $resultCount = $fetch->execute();     
